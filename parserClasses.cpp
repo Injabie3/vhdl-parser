@@ -15,7 +15,79 @@
 #include "parserClasses.h"
 #include <string>
 
+//****Token class function definition******
 
+//Default Constructor
+Token::Token()
+{
+	next = NULL;
+	prev = NULL;
+	stringRep = "";
+	details = NULL;
+}
+
+//Constructor with string initialization
+//Not allocating tokenDetails here.
+Token::Token(const string &stringRep)
+{
+	next = NULL;
+	prev = NULL;
+	this->stringRep = stringRep;
+	details = NULL;	
+}
+
+//Copy constructor for Token class.
+//Allocate token details accordingly by checking if details member of object is NULL or not.
+Token::Token(const Token &token)
+{
+	next = token.getNext();
+	prev = token.getPrev();
+	stringRep = token.getStringRep();
+	if (token.getTokenDetails() != NULL)
+	{
+		details = new tokenDetails;
+		details->type = token.getTokenDetails()->type;
+		details->width = token.getTokenDetails()->width;
+	}
+
+	//Check if tokenType should be initialized here.
+}
+
+//Overloaded assignment operator for Token class
+//Self-note: Everything here should be the same as copy constructor, because it's supposed to do the same thing.
+//Allocate token details accordingly by checking if details member of object is NULL or not.
+void Token::operator =(const Token& token)
+{
+	next = token.getNext();
+	prev = token.getPrev();
+	stringRep = token.getStringRep();
+	if (token.getTokenDetails() != NULL)
+	{
+		details = new tokenDetails;
+		details->type = token.getTokenDetails()->type;
+		details->width = token.getTokenDetails()->width;
+	}
+
+	//Check if tokenType should be initialized here.
+}
+
+//Destructor for Token class
+Token::~Token()
+{
+	//Free dynamic memory, if any has been allocated.
+	if (details != NULL)
+	{
+		delete details;
+		details = NULL;
+	}
+}
+
+
+//New Token class member function: setTokenDetails
+void Token::setTokenDetails(const string &type, int width = 0)
+{
+
+}
 
 //****TokenList class function definitions******
 //           function implementations for append have been provided and do not need to be modified
@@ -40,6 +112,12 @@ void TokenList::append(Token *token) {
 		token->setPrev(tail);
 		tail = token;
 	}
+}
+
+//New TokenList class member function
+void TokenList::findAndSetTokenDetails(Token *token)
+{
+
 }
 
 
