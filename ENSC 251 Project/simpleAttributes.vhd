@@ -1,0 +1,2 @@
+CLK'EVENT
+vector ' length

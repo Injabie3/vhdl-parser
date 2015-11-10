@@ -9,7 +9,7 @@
 // Revision Hist.:	1.0 - File creation.
 //					2.0 - Final product.
 //					3.0 - Modifications for Project.
-
+#define _CRT_SECURE_NO_WARNINGS
 
 //Use only the following libraries:
 #include "parserClasses.h"
@@ -84,9 +84,9 @@ Token::~Token()
 
 
 //New Token class member function: setTokenDetails
-void Token::setTokenDetails(const string &type, int width = 0)
+void Token::setTokenDetails(const string &type, int width)
 {
-
+	return;
 }
 
 //****TokenList class function definitions******
@@ -117,6 +117,28 @@ void TokenList::append(Token *token) {
 //New TokenList class member function
 void TokenList::findAndSetTokenDetails(Token *token)
 {
+	int checkInvalidKeyword = 0;	//Store index  for checking if token contains invalid keyword characters
+	string stringRepLower = "";		//The string in the token in all lowercase.
+	char *buffer = NULL;
+	
+	//Convert stringRep contents to lowercase
+	buffer = new char[token->getStringRep().length() + 1];
+	strcpy(buffer, token->getStringRep().c_str());
+	for (int ii = 0; ii < (int)token->getStringRep().length(); ii++)
+	{
+		tolower(buffer[ii]);
+		stringRepLower.push_back((char)tolower(buffer[ii]));
+	}
+
+	delete buffer;
+	buffer = NULL;
+	checkInvalidKeyword = token->getStringRep().find_first_of(invalidKeyword, 0);
+
+	//If we don't have invalid keyword characters, continue the check for keyword, else move on.
+	if (checkInvalidKeyword != -1)
+	{
+		
+	}
 
 }
 
