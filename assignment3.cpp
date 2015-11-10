@@ -70,7 +70,7 @@ int main() {
 	}
 	cout << endl << "Number of lines: " << lines << endl;
 	lines = 0;
-	commentsRemoved = removeComments(tokens);
+	//commentsRemoved = removeComments(tokens);
 
 	cout << "Comments removed: " << commentsRemoved << endl;
 	cout << "\nAfter removing comments:\n";
@@ -85,7 +85,7 @@ int main() {
 		t = t->getNext();
 	}
 	cout << endl << "Number of lines: " << lines << endl;
-	tokens.findAndSetTokenDetails(tokens.getFirst());
+	tokens.findAndSetTokenDetails(tokens.getFirst()->getNext());
 	sourceFile.close();
 	outFile.close();
 	return 0;

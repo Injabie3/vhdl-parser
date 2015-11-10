@@ -117,29 +117,51 @@ void TokenList::append(Token *token) {
 //New TokenList class member function
 void TokenList::findAndSetTokenDetails(Token *token)
 {
-	int checkInvalidKeyword = 0;	//Store index  for checking if token contains invalid keyword characters
+	int checkInvalidKeyword = 0;	//Store index for checking if token contains invalid keyword characters
+	int checkDelimiters = 0;		//Store index for checking if token contains delimiter characters
 	string stringRepLower = "";		//The string in the token in all lowercase.
 	char *buffer = NULL;
 	
+	//Stage 0: Preparing lowercase string
 	//Convert stringRep contents to lowercase
-	buffer = new char[token->getStringRep().length() + 1];
-	strcpy(buffer, token->getStringRep().c_str());
-	for (int ii = 0; ii < (int)token->getStringRep().length(); ii++)
+	buffer = new char[token->stringRep.length() + 1];
+	strcpy(buffer, token->stringRep.c_str());
+	for (int ii = 0; ii < (int)token->stringRep.length(); ii++)
 	{
-		tolower(buffer[ii]);
-		stringRepLower.push_back((char)tolower(buffer[ii]));
+		stringRepLower.push_back((char)tolower(buffer[ii])); //"Pushes" the current lowercased character into the converted lowercase string.
 	}
 
-	delete buffer;
+	delete buffer;	//No need for this character array anymore, so delete and set to NULL
 	buffer = NULL;
-	checkInvalidKeyword = token->getStringRep().find_first_of(invalidKeyword, 0);
 
+	checkInvalidKeyword = token->stringRep.find_first_of(invalidKeyword, 0);
+
+	//Stage 1: Keyword Checker
 	//If we don't have invalid keyword characters, continue the check for keyword, else move on.
-	if (checkInvalidKeyword != -1)
+	if (checkInvalidKeyword == -1)
 	{
-		
+		for (int ii = 0; ii < 97; ii++)	//Loop to check array of keywords all in lowercase. Note to self to change 97 to a defined constant later.
+		{
+			if (stringRepLower == keywords[ii])
+			{
+				token->_isKeyword = true;
+				break;
+			}
+		}
 	}
 
+
+	//Stage 2: Categorizing the token
+	//#1 - Comments
+	if (token->prev != NULL)
+	{
+		//Current token is a comment if the previous token is -- and this token is not a new line
+		if (token->prev->getStringRep() == "--" && token->stringRep != "\n" && token->stringRep != "\r")
+			token->type = T_CommentBody;
+	}
+	//#2 - Identifiers
+	//else if ( )
+	return;
 }
 
 
