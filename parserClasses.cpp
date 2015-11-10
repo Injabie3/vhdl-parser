@@ -119,6 +119,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 {
 	int checkInvalidKeyword = 0;	//Store index for checking if token contains invalid keyword characters
 	int checkDelimiters = 0;		//Store index for checking if token contains delimiter characters
+	int checkAlpha = 0;				//Store index for checking the first alpha character.
 	string stringRepLower = "";		//The string in the token in all lowercase.
 	char *buffer = NULL;
 	
@@ -156,11 +157,16 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	if (token->prev != NULL)
 	{
 		//Current token is a comment if the previous token is -- and this token is not a new line
+		//NOTE: Check if tolower affects \n and \r and if it doesn't change below to the local version.
 		if (token->prev->getStringRep() == "--" && token->stringRep != "\n" && token->stringRep != "\r")
 			token->type = T_CommentBody;
 	}
 	//#2 - Identifiers
-	//else if ( )
+	else if (stringRepLower.find_first_of(alpha, 0) == 0 && stringRepLower.find_first_of(delimiters, 0) == -1 )	//First character is alpha, and there are no illegal characters for identifiers
+	{
+		token->type = T_Identifier;
+
+	}
 	return;
 }
 
