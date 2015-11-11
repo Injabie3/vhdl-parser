@@ -76,8 +76,15 @@ int main() {
 	cout << "\nAfter removing comments:\n";
 	/*Test your tokenization of the file by traversing the tokens list and printing out the tokens*/
 	t = tokens.getFirst();
+	string details;
 	while(t) {
-		cout << "[" << t->getStringRep() << "] ";
+		tokens.findAndSetTokenDetails(t);
+		
+		if (t->getTokenDetails() != NULL)
+		{
+			details = t->getTokenDetails()->type;
+		}
+		cout << "[" << t->getStringRep() << "] (" << t->getTokenType() << "," << t->isKeyword() << ") ";
 		if (t->getStringRep() == "\n")
 		{
 			lines++;
@@ -85,7 +92,7 @@ int main() {
 		t = t->getNext();
 	}
 	cout << endl << "Number of lines: " << lines << endl;
-	tokens.findAndSetTokenDetails(tokens.getFirst()->getNext());
+	tokens.findAndSetTokenDetails(tokens.getFirst());
 	sourceFile.close();
 	outFile.close();
 	return 0;

@@ -24,9 +24,14 @@ findAndSetTokenDetails
 					- take the difference of the absolute value of the two, and add 1 to it.
 					- This is the width of the token. Store accordingly
 		- literals
-			- check for two instances of '' or "", or if token contains numerals only.
+			- check for two instances of '' or "", or if token contains numerals only, or true false.
 			- If true, then categorize as literal.
-			- NOT DONE YET: ID type and width.
+			- If first character is ', then type is std_logic. No width
+			- If first character is ", then type is std_logic_vector. Width = difference between " positions
+			- if first character is numeral, then type is integer. No width
+			- Check if first character is box - then type is std_logic_vector
+				- Find length between ""
+				- multiply that length accordingly depending on binary/octal/hex and that is width
 		- operators
 			- Compare local stringRep of token to operators array to see if there is a match.
 				- If matched, then categorize as operator.

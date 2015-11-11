@@ -120,9 +120,20 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	int checkInvalidKeyword = 0;	//Store index for checking if token contains invalid keyword characters
 	int checkDelimiters = 0;		//Store index for checking if token contains delimiter characters
 	int checkAlpha = 0;				//Store index for checking the first alpha character.
+	int checkNonNumeral = 0;		//Store index of first non-numeral character
+	int checkQuote1 = 0;			//Store index for checking first single/double quote.
+	int checkQuote2 = 0;			//Store index for checking second single/double quote.
+
+	int bitVectorType = 0;			//Used to tell if bit vector is binary (2), octal (3), or hex (4)
+
 	string stringRepLower = "";		//The string in the token in all lowercase.
 	char *buffer = NULL;
 	
+
+	//Stage -1: Ignore \n and \r and do not set details.
+	if (token->getStringRep() == "\n" || token->getStringRep() == "\r")
+		return;
+
 	//Stage 0: Preparing lowercase string
 	//Convert stringRep contents to lowercase
 	buffer = new char[token->stringRep.length() + 1];
@@ -135,7 +146,12 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	delete buffer;	//No need for this character array anymore, so delete and set to NULL
 	buffer = NULL;
 
-	checkInvalidKeyword = token->stringRep.find_first_of(invalidKeyword, 0);
+	checkInvalidKeyword = stringRepLower.find_first_of(invalidKeyword, 0);		//Check for characters that would eliminate token to be keyword
+
+	checkQuote1 = stringRepLower.find_first_of(singleQuotes+doubleQuotes, 0);	//Check location of first single/double quote.
+	checkQuote2 = stringRepLower.find_first_of(singleQuotes + doubleQuotes, checkQuote1+1);	//Check location of second single/double quote.
+	checkNonNumeral = stringRepLower.find_first_not_of(numeral, 0);	//Check location of first non-numeral character
+
 
 	//Stage 1: Keyword Checker
 	//If we don't have invalid keyword characters, continue the check for keyword, else move on.
@@ -159,15 +175,70 @@ void TokenList::findAndSetTokenDetails(Token *token)
 		//Current token is a comment if the previous token is -- and this token is not a new line
 		//NOTE: Check if tolower affects \n and \r and if it doesn't change below to the local version.
 		if (token->prev->getStringRep() == "--" && token->stringRep != "\n" && token->stringRep != "\r")
+		{
 			token->type = T_CommentBody;
+			return;
+		}
 	}
+
 	//#2 - Identifiers
-	else if (stringRepLower.find_first_of(alpha, 0) == 0 && stringRepLower.find_first_of(delimiters, 0) == -1 )	//First character is alpha, and there are no illegal characters for identifiers
+	//Check if first character is alpha, and there are no illegal characters for identifiers
+	if (stringRepLower.find_first_of(alpha, 0) == 0 && stringRepLower.find_first_of(delimiters, 0) == -1 )
 	{
 		token->type = T_Identifier;
 
+		//Still a WIP
+		return;
 	}
+	//#3 - Literals
+	//Check for two instances of '' or "", or if token contains numerals only, or true false
+	else if ((checkQuote1 != -1 && checkQuote2 != -1) || checkNonNumeral == -1 || stringRepLower == "false" || stringRepLower == "true")
+	{
+		token->type = T_Literal;
+		if (stringRepLower == "false" || stringRepLower == "true") //Type is boolean
+		{
+			//Set token details using the class public function
+			token->setTokenDetails("boolean", 0);
+		}
+		else if (checkQuote1 == 0)	//First character is " or '
+		{
+			if (stringRepLower[0] == '\'') //std_logic
+				token->setTokenDetails("std_logic", 0);
+			else //std_logic_vector, with the width being the difference between the two locations of the quotes
+				token->setTokenDetails("std_logic_vector", checkQuote2 - checkQuote1-1);
+		}
+		else if (checkNonNumeral == -1) //Integer
+		{
+			token->setTokenDetails("integer", 0);
+		}
+		else //Bit vectors - std_logic_vector
+		{
+			
+			if (stringRepLower[0] == 'b') //Binary
+				bitVectorType = 2;
+			else if (stringRepLower[0] == 'o') //Octal
+				bitVectorType = 3;
+			else bitVectorType = 4;
+			token->setTokenDetails("std_logic_vector", bitVectorType*(checkQuote2 - checkQuote1-1));
+		}
+		return;
+	}
+	//#4 - Operators
+	//Loop to check array of operators all in lowercase. Note to self to change 28to a defined constant later.
+	for (int ii = 0; ii < 28; ii++)	
+	{
+		if (stringRepLower == operators[ii])
+		{
+			token->type = T_Operator;
+			token->setTokenDetails("operator", 0);
+			return;
+		}
+	}
+
+	//#5 - Everything else: We can't find anything matching by this point, so set type to other.
+	token->type = T_Other;
 	return;
+
 }
 
 

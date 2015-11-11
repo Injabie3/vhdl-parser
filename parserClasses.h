@@ -35,8 +35,10 @@ const string commentDelimiter = "-";
 
 const string invalidKeyword = ",<>=:\"'.:+-/*&|;#()0123456789";
 const string alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string numeral = "0123456789";
 
 const string keywords[97] = { "abs", "access", "after", "alias", "all", "and", "architecture", "array", "assert", "attribute", "begin", "block", "body", "buffer", "bus", "case", "component", "configuration", "constant", "disconnect", "downto", "else", "elsif", "end", "entity", "exit", "file", "for", "function", "generate", "generic", "group", "guarded", "if", "impure", "in", "inertial", "inout", "is", "label", "library", "linkage", "literal", "loop", "map", "mod", "nand", "new", "next", "nor", "not", "null", "of", "on", "open", "or", "others", "out", "package", "port", "postponed", "procedure", "process", "pure", "range", "record", "register", "reject", "rem", "report", "return", "rol", "ror", "select", "severity", "signal", "shared", "sla", "sll", "sra", "srl", "subtype", "then", "to", "transport", "type", "unaffected", "units", "until", "use", "variable", "wait", "when", "while", "with", "xnor", "xor" };
+const string operators[28] = { "**", "abs", "not", "*", "/", "mod", "rem", "+", "-", "&", "sll", "srl", "sla", "sra", "rol", "ror", "=", "/=", "<", "<=", ">", ">=", "and", "or", "nand", "nor", "xor", "xnor" };
 
 //Token class for a doubly-linked list of string tokens
 class Token {
@@ -120,7 +122,7 @@ public:
 
 	//Set's the tokenDetails given a string type and optional vector width
 	//Allocates tokenDetails if it doesn't already exist
-	void setTokenDetails(const string &type, int width = 0);
+	void setTokenDetails(const string &type, int width);
 
 };
 
