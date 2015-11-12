@@ -131,6 +131,7 @@ class TokenList {
 private:
 	Token *head; //Points to the head of the token list (doubly linked)
 	Token *tail; //Points to the tail of the function list (doubly linked)
+	string stringLower(Token *token); //Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string.
 	
 public:
 	//Default Constructor, Empty list with pointers initialized to NULL

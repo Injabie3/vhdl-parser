@@ -86,6 +86,17 @@ Token::~Token()
 //New Token class member function: setTokenDetails
 void Token::setTokenDetails(const string &type, int width)
 {
+	if (details == NULL) //No memory allocated for tokenDetails struct
+	{
+		details = new tokenDetails;
+		details->type = type;
+		details->width = width;
+	}
+	else //Memory allocated for tokenDetails struct
+	{
+		details->type = type;
+		details->width = width;
+	}
 	return;
 }
 
@@ -126,8 +137,14 @@ void TokenList::findAndSetTokenDetails(Token *token)
 
 	int bitVectorType = 0;			//Used to tell if bit vector is binary (2), octal (3), or hex (4)
 
+	int bound1 = 0;					//First bound of a vector, used to determine length of identifier.
+	int bound2 = 0;					//Second bound of a vector, used to determine length of identifier.
+
 	string stringRepLower = "";		//The string in the token in all lowercase.
-	char *buffer = NULL;
+	string prevStringRepLower = "";	//The previous token's string in all lowercase, if it exists.
+	string nextStringRepLower = ""; //The next token's (or next-next token's) string in all lowercase, if it exists.
+	Token *type = NULL;				//Pointer to the token holding the type, if it exists. Used when checking if it is an identifier or not.
+	Token *here = NULL;				//Pointer to a token, used to loop through and check previous tokens to see if there is another identifier with the same name.
 	
 
 	//Stage -1: Ignore \n and \r and do not set details.
@@ -136,15 +153,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 
 	//Stage 0: Preparing lowercase string
 	//Convert stringRep contents to lowercase
-	buffer = new char[token->stringRep.length() + 1];
-	strcpy(buffer, token->stringRep.c_str());
-	for (int ii = 0; ii < (int)token->stringRep.length(); ii++)
-	{
-		stringRepLower.push_back((char)tolower(buffer[ii])); //"Pushes" the current lowercased character into the converted lowercase string.
-	}
-
-	delete buffer;	//No need for this character array anymore, so delete and set to NULL
-	buffer = NULL;
+	stringRepLower = stringLower(token);
 
 	checkInvalidKeyword = stringRepLower.find_first_of(invalidKeyword, 0);		//Check for characters that would eliminate token to be keyword
 
@@ -188,6 +197,49 @@ void TokenList::findAndSetTokenDetails(Token *token)
 		token->type = T_Identifier;
 
 		//Still a WIP
+		if (token->getPrev() != NULL) //Check if previous token exists
+		{
+			prevStringRepLower = stringLower(token->getPrev());
+			//Check previous token for "signal" or "variable"
+			//If true, then check the token after the next(aka the one after : )
+			if (prevStringRepLower == "signal" || prevStringRepLower == "variable")
+			{
+				//Assuming valid VHDL at this point, so next token and token after that exists.
+				//Take the token after the next (aka the one after :) as type
+				nextStringRepLower = stringLower(token->getNext()->getNext());
+				//If the type is "std_logic_vector", check the next few tokens to determine width
+				if (nextStringRepLower == "std_logic_vector")
+				{
+					//<type> ( # downto/to # )
+					type = token->getNext()->getNext();
+					bound1 = stoi(type->getNext()->getNext()->getStringRep());
+					bound2 = stoi(type->getNext()->getNext()->getNext()->getNext()->getStringRep());
+					token->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
+					return;
+				}
+				else
+				{
+					//<type>
+					token->setTokenDetails(nextStringRepLower, 0);
+					return;
+				}
+			}
+		}
+
+		//If we haven't returned at this point in this if statement:
+		//Check all previous nodes for same identifier name, and copy its contents if we find it.
+		here = token->getPrev();
+		while (here != NULL)
+		{
+			prevStringRepLower = stringLower(here);
+			if (prevStringRepLower == stringRepLower && here->getTokenDetails() != NULL)
+			{
+				token->setTokenDetails(here->getTokenDetails()->type, here->getTokenDetails()->width);
+				return;
+			}
+			here = here->getPrev();
+		}
+
 		return;
 	}
 	//#3 - Literals
@@ -239,6 +291,23 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	token->type = T_Other;
 	return;
 
+}
+
+string TokenList::stringLower(Token *token)
+//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string.
+{
+	string stringRepLower = "";		//The string in the token in all lowercase.
+	char *buffer = NULL;			//The string held in a character array.
+	buffer = new char[token->stringRep.length() + 1];
+	strcpy(buffer, token->stringRep.c_str());
+	for (int ii = 0; ii < (int)token->stringRep.length(); ii++)
+	{
+		stringRepLower.push_back((char)tolower(buffer[ii])); //"Pushes" the current lowercased character into the converted lowercase string.
+	}
+
+	delete buffer;	//No need for this character array anymore, so delete and set to NULL
+	buffer = NULL;
+	return stringRepLower;
 }
 
 
@@ -466,4 +535,26 @@ int removeComments(TokenList &tokenList)
 	return removed;
 }
 
+//Removes all tokens of the given tokenType
+//Returns the number of tokens removed
+int removeTokensOfType(TokenList &tokenList, tokenType type)
+{
+	Token *move = tokenList.getFirst();		//A pointer to iterate through the tokens
+	Token *temp = NULL; //Pointer used to delete the token.
+	int removed = 0; //Counter for the number of tokens removed
+	while (move != NULL)
+	{
+		temp = move;
+		if (temp->getTokenType() == type) //Found matching type
+		{
+			move = move->getNext();
+			tokenList.deleteToken(temp); //Delete the token of matching type
+			removed++;
+		}
+		else
+		{
+			move = move->getNext();
+		}
+	}
+}
 

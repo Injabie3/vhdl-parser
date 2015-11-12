@@ -77,14 +77,17 @@ int main() {
 	/*Test your tokenization of the file by traversing the tokens list and printing out the tokens*/
 	t = tokens.getFirst();
 	string details;
+	int width;
 	while(t) {
 		tokens.findAndSetTokenDetails(t);
-		
+		details = "N/A";
+		width = 0;
 		if (t->getTokenDetails() != NULL)
 		{
 			details = t->getTokenDetails()->type;
+			width = t->getTokenDetails()->width;
 		}
-		cout << "[" << t->getStringRep() << "] (" << t->getTokenType() << "," << t->isKeyword() << ") ";
+		cout << "[" << t->getStringRep() << "] (" << t->getTokenType() << "," << t->isKeyword() << "," << details << "," << width << ") ";
 		if (t->getStringRep() == "\n")
 		{
 			lines++;
