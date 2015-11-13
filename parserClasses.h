@@ -23,22 +23,25 @@ struct tokenDetails {
   int width; //bit width for vector types
 };
 
-//Declare your variables for storing delimiters here:
-const string alphaNumerals = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-const string bitVectorChar = "boxBOX";
-const string bitVectorSymbol = "\"";
-const string doubleQuotes = "\"";
-const string singleQuotes = "'";
-const string delimiters = ",<>=:\"'.:+-/*&|;#()";
-const string secondDelimiter = ">=*";
-const string commentDelimiter = "-";
+//Declare your variables for storing DELIMITERS here:
+const string ALPHA_NUMERALS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+const string BITVECTOR_CHAR = "boxBOX";
+const string BITVECTOR_SYMBOL = "\"";
+const string DOUBLE_QUOTES = "\"";
+const string SINGLE_QUOTES = "'";
+const string DELIMITERS = ",<>=:\"'.:+-/*&|;#()";
+const string SECOND_DELIMITER = ">=*";
+const string COMMENT_DELIMITER = "-";
 
-const string invalidKeyword = ",<>=:\"'.:+-/*&|;#()0123456789";
-const string alpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const string numeral = "0123456789";
+const string INVALID_KEYWORD = ",<>=:\"'.:+-/*&|;#()0123456789";
+const string ALPHA = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string NUMERAL = "0123456789";
 
-const string keywords[97] = { "abs", "access", "after", "alias", "all", "and", "architecture", "array", "assert", "attribute", "begin", "block", "body", "buffer", "bus", "case", "component", "configuration", "constant", "disconnect", "downto", "else", "elsif", "end", "entity", "exit", "file", "for", "function", "generate", "generic", "group", "guarded", "if", "impure", "in", "inertial", "inout", "is", "label", "library", "linkage", "literal", "loop", "map", "mod", "nand", "new", "next", "nor", "not", "null", "of", "on", "open", "or", "others", "out", "package", "port", "postponed", "procedure", "process", "pure", "range", "record", "register", "reject", "rem", "report", "return", "rol", "ror", "select", "severity", "signal", "shared", "sla", "sll", "sra", "srl", "subtype", "then", "to", "transport", "type", "unaffected", "units", "until", "use", "variable", "wait", "when", "while", "with", "xnor", "xor" };
-const string operators[28] = { "**", "abs", "not", "*", "/", "mod", "rem", "+", "-", "&", "sll", "srl", "sla", "sra", "rol", "ror", "=", "/=", "<", "<=", ">", ">=", "and", "or", "nand", "nor", "xor", "xnor" };
+const string KEYWORDS[97] = { "abs", "access", "after", "alias", "all", "and", "architecture", "array", "assert", "attribute", "begin", "block", "body", "buffer", "bus", "case", "component", "configuration", "constant", "disconnect", "downto", "else", "elsif", "end", "entity", "exit", "file", "for", "function", "generate", "generic", "group", "guarded", "if", "impure", "in", "inertial", "inout", "is", "label", "library", "linkage", "literal", "loop", "map", "mod", "nand", "new", "next", "nor", "not", "null", "of", "on", "open", "or", "others", "out", "package", "port", "postponed", "procedure", "process", "pure", "range", "record", "register", "reject", "rem", "report", "return", "rol", "ror", "select", "severity", "signal", "shared", "sla", "sll", "sra", "srl", "subtype", "then", "to", "transport", "type", "unaffected", "units", "until", "use", "variable", "wait", "when", "while", "with", "xnor", "xor" };
+
+const string OPERATORS[28] = { "**", "abs", "not", "*", "/", "mod", "rem", "+", "-", "&", "sll", "srl", "sla", "sra", "rol", "ror", "=", "/=", "<", "<=", ">", ">=", "and", "or", "nand", "nor", "xor", "xnor" };
+
+const string CONDITIONAL[3] = { "if", "elsif", "then" };
 
 //Token class for a doubly-linked list of string tokens
 class Token {

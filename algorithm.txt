@@ -54,6 +54,19 @@ findAndSetTokenDetails
 			
 			
 			
+findAllConditionalExpressions
+	- While the pointer to the current token is not NULL:
+		- Traverse TokenList until if, elsif, (or then) is found in the string token.
+		- Take the next token after the if, elsif or then token.
+		- While the current token doesn't contain the if, else, or then statement:
+			- Make a copy of the token, and append to new TokenList.
+			- Go to next token
+	- Return pointer to new TokenList.
+	
+
+			
+			
+			
 			
 Code below for operators and keywords:
 			

@@ -155,20 +155,20 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	//Convert stringRep contents to lowercase
 	stringRepLower = stringLower(token);
 
-	checkInvalidKeyword = stringRepLower.find_first_of(invalidKeyword, 0);		//Check for characters that would eliminate token to be keyword
+	checkInvalidKeyword = stringRepLower.find_first_of(INVALID_KEYWORD, 0);		//Check for characters that would eliminate token to be keyword
 
-	checkQuote1 = stringRepLower.find_first_of(singleQuotes+doubleQuotes, 0);	//Check location of first single/double quote.
-	checkQuote2 = stringRepLower.find_first_of(singleQuotes + doubleQuotes, checkQuote1+1);	//Check location of second single/double quote.
-	checkNonNumeral = stringRepLower.find_first_not_of(numeral, 0);	//Check location of first non-numeral character
+	checkQuote1 = stringRepLower.find_first_of(SINGLE_QUOTES + DOUBLE_QUOTES, 0);	//Check location of first single/double quote.
+	checkQuote2 = stringRepLower.find_first_of(SINGLE_QUOTES + DOUBLE_QUOTES, checkQuote1+1);	//Check location of second single/double quote.
+	checkNonNumeral = stringRepLower.find_first_not_of(NUMERAL, 0);	//Check location of first non-numeral character
 
 
 	//Stage 1: Keyword Checker
 	//If we don't have invalid keyword characters, continue the check for keyword, else move on.
 	if (checkInvalidKeyword == -1)
 	{
-		for (int ii = 0; ii < 97; ii++)	//Loop to check array of keywords all in lowercase. Note to self to change 97 to a defined constant later.
+		for (int ii = 0; ii < 97; ii++)	//Loop to check array of KEYWORDS all in lowercase. Note to self to change 97 to a defined constant later.
 		{
-			if (stringRepLower == keywords[ii])
+			if (stringRepLower == KEYWORDS[ii])
 			{
 				token->_isKeyword = true;
 				break;
@@ -192,7 +192,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 
 	//#2 - Identifiers
 	//Check if first character is alpha, and there are no illegal characters for identifiers
-	if (stringRepLower.find_first_of(alpha, 0) == 0 && stringRepLower.find_first_of(delimiters, 0) == -1 )
+	if (stringRepLower.find_first_of(ALPHA, 0) == 0 && stringRepLower.find_first_of(DELIMITERS, 0) == -1 )
 	{
 		token->type = T_Identifier;
 
@@ -279,7 +279,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	//Loop to check array of operators all in lowercase. Note to self to change 28to a defined constant later.
 	for (int ii = 0; ii < 28; ii++)	
 	{
-		if (stringRepLower == operators[ii])
+		if (stringRepLower == OPERATORS[ii])
 		{
 			token->type = T_Operator;
 			token->setTokenDetails("operator", 0);
@@ -342,20 +342,20 @@ void Tokenizer::prepareNextToken()
 	//Run the checks
 	firstChar = str->find_first_not_of(" \t\r\n", offset);
 
-	checkAlphaNumeral = str->find_first_of(alphaNumerals, firstChar); //Find first location of alphanumeral character
+	checkAlphaNumeral = str->find_first_of(ALPHA_NUMERALS, firstChar); //Find first location of alphanumeral character
 
-	checkBitVectorChar = str->find_first_of(bitVectorChar, firstChar); //Find first location of boxBOX characters
-	checkBitVectorSymbol = str->find_first_of(bitVectorSymbol, firstChar); //Find first location of " character
+	checkBitVectorChar = str->find_first_of(BITVECTOR_CHAR, firstChar); //Find first location of boxBOX characters
+	checkBitVectorSymbol = str->find_first_of(BITVECTOR_SYMBOL, firstChar); //Find first location of " character
 
-	checkDoubleQuotes = str->find_first_of(doubleQuotes, firstChar); //Find first location of "
+	checkDoubleQuotes = str->find_first_of(DOUBLE_QUOTES, firstChar); //Find first location of "
 
-	checkSingleQuotes = str->find_first_of(singleQuotes, firstChar); //Find first location of '
+	checkSingleQuotes = str->find_first_of(SINGLE_QUOTES, firstChar); //Find first location of '
 
-	checkComments = str->find_first_of(commentDelimiter, firstChar);
-	checkComments2 = str->find_first_of(commentDelimiter, firstChar + 1);
+	checkComments = str->find_first_of(COMMENT_DELIMITER, firstChar);
+	checkComments2 = str->find_first_of(COMMENT_DELIMITER, firstChar + 1);
 
-	checkDelimiter = str->find_first_of(delimiters, firstChar); //Find first location of delimiter character
-	checkSecondDelimiter = str->find_first_of(secondDelimiter, firstChar + 1); //Find second location of delimiter character, if any
+	checkDelimiter = str->find_first_of(DELIMITERS, firstChar); //Find first location of delimiter character
+	checkSecondDelimiter = str->find_first_of(SECOND_DELIMITER, firstChar + 1); //Find second location of delimiter character, if any
 	
 	if ((offset == -1) || (offset >= (int)str->length()) || firstChar == -1)	//If the offset is str::npos (aka -1), or exceeds the boundaries of the string's length, or we can't find a non-whitespace character, set complete to true.
 	{
@@ -369,16 +369,16 @@ void Tokenizer::prepareNextToken()
 	{
 		if (firstChar == checkBitVectorChar && firstChar + 1 == checkBitVectorSymbol) //We are dealing with bit vector. Handle appropriately
 		{
-			lastChar = str->find_first_of(bitVectorSymbol, firstChar + 2)+1;
+			lastChar = str->find_first_of(BITVECTOR_SYMBOL, firstChar + 2)+1;
 		}
 		else //Normal alphanumeral string
 		{
-			lastChar = str->find_first_not_of(alphaNumerals, firstChar);
+			lastChar = str->find_first_not_of(ALPHA_NUMERALS, firstChar);
 		}
 	}
 	else if (firstChar == checkSingleQuotes) //First character is ' We check this first to handle ' properly
 	{
-		checkSingleQuotes = str->find_first_of(singleQuotes, firstChar + 1);			//Find next '
+		checkSingleQuotes = str->find_first_of(SINGLE_QUOTES, firstChar + 1);			//Find next '
 		if (firstChar + 2 == checkSingleQuotes) //If true, we have 'x', where x is a bit literal
 		{
 			lastChar = checkSingleQuotes + 1;
@@ -390,7 +390,7 @@ void Tokenizer::prepareNextToken()
 	}
 	else if (firstChar == checkDoubleQuotes) //First character is ". We check this first to handle " properly
 	{
-		lastChar = str->find_first_of(doubleQuotes, firstChar + 1) + 1;	//+1 because we want to include that last character
+		lastChar = str->find_first_of(DOUBLE_QUOTES, firstChar + 1) + 1;	//+1 because we want to include that last character
 	}
 	else if (firstChar == checkComments)
 	{
@@ -520,9 +520,9 @@ int removeComments(TokenList &tokenList)
 			tokenList.deleteToken(temp);	//Delete -- token
 			temp = move;
 			move = move->getNext();
-			if (temp->getStringRep() != "\n") 
+			if (temp != NULL && temp->getTokenType() == T_CommentBody) 
 			{
-				tokenList.deleteToken(temp);	//Delete comment token if not new line. \n is guaranteed and endorsed by TA on @402: http://puu.sh/kZ6KX/96a00c445b.png
+				tokenList.deleteToken(temp);	//Delete comment token token is classified as comment body. \n is no longer guaranteed as mentioned by Eric (TA) in @471
 			}
 			
 			removed++;
@@ -556,5 +556,30 @@ int removeTokensOfType(TokenList &tokenList, tokenType type)
 			move = move->getNext();
 		}
 	}
+
+	return removed;
 }
+
+//Creates a new TokenList, and returns a pointer to this list
+//Searches for all conditional expressions in tokenList and appends them to the new list
+//Format is as follows:
+//Each token that is part of a condtional expression is appended sequentially
+//At the end of a conditional expression a newline character is appened
+//Example: if (a = true) then
+//Your list should include "(", "a", "=", "true", ")" and "\n" 
+//tokenList is NOT modified
+//TokenList* findAllConditionalExpressions(const TokenList &tokenList)
+//{
+//	TokenList *newList = NULL;	//The tokenlist that will be returned at the end.
+//	Token *temp = NULL;		//Temporary pointer to a token.
+//	Token *move = NULL;
+//
+//	move = tokenList.getFirst(); 
+//	
+//	while (move != NULL)
+//	{
+//		
+//	}
+//
+//}
 
