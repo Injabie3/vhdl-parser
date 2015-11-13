@@ -117,11 +117,18 @@ void TokenList::append(Token *token) {
 	if (!head) {
 		head = token;
 		tail = token;
+		//To account for conditional statements list, setting next/prev to NULL to dissociate with previous list
+		//Got the OK to modify append from @481: http://puu.sh/lkwKu/717331a7f7.png
+		token->setPrev(NULL);
+		token->setNext(NULL);
 	}
 	else {
 		tail->setNext(token);
 		token->setPrev(tail);
 		tail = token;
+		//To account for conditional statements list, setting next/prev to NULL to dissociate with previous list
+		//Got the OK to modify append from @481: http://puu.sh/lkwKu/717331a7f7.png
+		token->setNext(NULL);
 	}
 }
 
@@ -292,24 +299,6 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	return;
 
 }
-
-string TokenList::stringLower(Token *token)
-//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string.
-{
-	string stringRepLower = "";		//The string in the token in all lowercase.
-	char *buffer = NULL;			//The string held in a character array.
-	buffer = new char[token->stringRep.length() + 1];
-	strcpy(buffer, token->stringRep.c_str());
-	for (int ii = 0; ii < (int)token->stringRep.length(); ii++)
-	{
-		stringRepLower.push_back((char)tolower(buffer[ii])); //"Pushes" the current lowercased character into the converted lowercase string.
-	}
-
-	delete buffer;	//No need for this character array anymore, so delete and set to NULL
-	buffer = NULL;
-	return stringRepLower;
-}
-
 
 //Complete the implementation of the following member functions:
 //****Tokenizer class function definitions******
@@ -568,18 +557,62 @@ int removeTokensOfType(TokenList &tokenList, tokenType type)
 //Example: if (a = true) then
 //Your list should include "(", "a", "=", "true", ")" and "\n" 
 //tokenList is NOT modified
-//TokenList* findAllConditionalExpressions(const TokenList &tokenList)
-//{
-//	TokenList *newList = NULL;	//The tokenlist that will be returned at the end.
-//	Token *temp = NULL;		//Temporary pointer to a token.
-//	Token *move = NULL;
-//
-//	move = tokenList.getFirst(); 
-//	
-//	while (move != NULL)
-//	{
-//		
-//	}
-//
-//}
+TokenList* findAllConditionalExpressions(const TokenList &tokenList)
+{
+	TokenList *newList = NULL;	//The tokenlist that will be returned at the end.
+	Token *temp = NULL;		//Temporary pointer to a token.
+	Token *move = NULL;
+	Token *copiedToken = NULL; //New copy of the token, using copy constructor/overloaded assignment operator
+	bool conditionalStatement = false;	//bool to keep track of if else, elseif, and then was found before.
+	string lowerStringRep = ""; //The lowered string.
 
+	move = tokenList.getFirst(); 
+	
+	while (move != NULL)
+	{
+		lowerStringRep = stringLower(move);
+		//If we run into if, elsif, or then, toggle conditionalStatement
+		if (lowerStringRep == "if" || lowerStringRep == "elsif" || lowerStringRep == "then")
+		{
+			if (conditionalStatement == true)
+			{
+				conditionalStatement = false;
+				newList->append("\n");
+			}
+			else conditionalStatement = true;
+		}
+		else if (conditionalStatement)
+		{
+			if (newList == NULL)
+			{
+				newList = new TokenList;
+			}
+			copiedToken = new Token;
+			*copiedToken = *move; //Make a copy of the contents of the token via overloaded assignment operator.
+			newList->append(copiedToken); //Append the copy of the token to the new list.
+		}
+
+		move = move->getNext();
+	}
+	
+	return newList;
+}
+
+
+
+string stringLower(Token *token)
+//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string.
+{
+	string stringRepLower = "";		//The string in the token in all lowercase.
+	char *buffer = NULL;			//The string held in a character array.
+	buffer = new char[token->getStringRep().length() + 1];
+	strcpy(buffer, token->getStringRep().c_str());
+	for (int ii = 0; ii < (int)token->getStringRep().length(); ii++)
+	{
+		stringRepLower.push_back((char)tolower(buffer[ii])); //"Pushes" the current lowercased character into the converted lowercase string.
+	}
+
+	delete buffer;	//No need for this character array anymore, so delete and set to NULL
+	buffer = NULL;
+	return stringRepLower;
+}

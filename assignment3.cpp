@@ -22,6 +22,7 @@ int main() {
 	ifstream sourceFile;
 	ofstream outFile;
 	TokenList tokens;
+	TokenList *conditionalTokens;
 	Tokenizer tokenizer;
 	string fileName;
 	int lines = 0; //number of lines
@@ -54,7 +55,7 @@ int main() {
 			tokens.append(tokenizer.getNextToken());
 		}
 		//Re-insert newline that was removed by the getline function
-		tokens.append("\n");
+		//tokens.append("\n");
 	}
 
 	/*Test your tokenization of the file by traversing the tokens list and printing out the tokens*/
@@ -87,7 +88,7 @@ int main() {
 			details = t->getTokenDetails()->type;
 			width = t->getTokenDetails()->width;
 		}
-		cout << "[" << t->getStringRep() << "] (" << t->getTokenType() << "," << t->isKeyword() << "," << details << "," << width << ") ";
+		cout << "[" << t->getStringRep() << "] (" << t->getTokenType() << "," << t->isKeyword() << "," << details << "," << width << ") " << endl;
 		if (t->getStringRep() == "\n")
 		{
 			lines++;
@@ -95,7 +96,18 @@ int main() {
 		t = t->getNext();
 	}
 	cout << endl << "Number of lines: " << lines << endl;
-	tokens.findAndSetTokenDetails(tokens.getFirst());
+
+	conditionalTokens = findAllConditionalExpressions(tokens);
+	t = conditionalTokens->getFirst();
+	while (t) {
+		cout << "[" << t->getStringRep() << "] " << endl;
+		outFile << "[" << t->getStringRep() << "] " << endl;
+		if (t->getStringRep() == "\n")
+		{
+			lines++;
+		}
+		t = t->getNext();
+	}
 	sourceFile.close();
 	outFile.close();
 	return 0;
