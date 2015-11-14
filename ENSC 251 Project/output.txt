@@ -1,2 +1,1 @@
-[SIgnAL] [r] [:] [std_logic_veCTor] [(] [500] [downto] [3] [)] [;] [
-] 
+[SIgnAL] [r] [:] [std_logic_veCTor] [(] [500] [downto] [3] [)] [;] [r] [:=] [o"12345"] [;] 

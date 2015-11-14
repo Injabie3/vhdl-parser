@@ -12,6 +12,7 @@
 //Use only the following three libraries:
 #include "parserClasses.h"
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 using namespace std;
@@ -38,20 +39,20 @@ int main() {
 		return 1;
 	}
 
-	while(!sourceFile.eof()) {
+	while (!sourceFile.eof()) {
 		string lineA, lineB;
 
 		getline(sourceFile, lineA);
 
 		//while the current line ends with a line-continuation \ append the next line to the current line
-		while(lineA.length() > 0 && lineA[lineA.length()-1] == '\\') {
-			lineA.erase(lineA.length()-1, 1);
+		while (lineA.length() > 0 && lineA[lineA.length() - 1] == '\\') {
+			lineA.erase(lineA.length() - 1, 1);
 			getline(sourceFile, lineB);
 			lineA += lineB;
 		}
 
 		tokenizer.setString(&lineA);
-		while(!tokenizer.isComplete()) {
+		while (!tokenizer.isComplete()) {
 			tokens.append(tokenizer.getNextToken());
 		}
 		//Re-insert newline that was removed by the getline function
@@ -74,11 +75,12 @@ int main() {
 	//commentsRemoved = removeComments(tokens);
 
 	cout << "Comments removed: " << commentsRemoved << endl;
-	cout << "\nAfter removing comments:\n";
+	cout << "\Categorized Tokens:\n";
 	/*Test your tokenization of the file by traversing the tokens list and printing out the tokens*/
 	t = tokens.getFirst();
 	string details;
 	int width;
+	cout << setw(20) << "Token" << "|" << setw(5) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
 	while(t) {
 		tokens.findAndSetTokenDetails(t);
 		details = "N/A";
@@ -88,7 +90,7 @@ int main() {
 			details = t->getTokenDetails()->type;
 			width = t->getTokenDetails()->width;
 		}
-		cout << "[" << t->getStringRep() << "] (" << t->getTokenType() << "," << t->isKeyword() << "," << details << "," << width << ") " << endl;
+		cout << setw(20) << t->getStringRep() << "|" << setw(5) << t->getTokenType() << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
 		if (t->getStringRep() == "\n")
 		{
 			lines++;
@@ -98,7 +100,8 @@ int main() {
 	cout << endl << "Number of lines: " << lines << endl;
 
 	conditionalTokens = findAllConditionalExpressions(tokens);
-	t = conditionalTokens->getFirst();
+	if (conditionalTokens != NULL)
+		t = conditionalTokens->getFirst();
 	while (t) {
 		cout << "[" << t->getStringRep() << "] " << endl;
 		outFile << "[" << t->getStringRep() << "] " << endl;

@@ -14,6 +14,7 @@
 //Use only the following libraries:
 #include "parserClasses.h"
 #include <string>
+#include <cstring>
 
 //****Token class function definition******
 
