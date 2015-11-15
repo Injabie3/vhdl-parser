@@ -29,6 +29,11 @@ int main() {
 	int lines = 0; //number of lines
 	int commentsRemoved = 0;
 
+	int tokenTypeInt;
+	string tokenType;
+	string details;
+	int width;
+
 	//Read in a file line-by-line and tokenize each line
 	cout << "Enter VHDL file name with extension >>";
 	cin >> fileName;
@@ -64,51 +69,80 @@ int main() {
 	while (t) {
 		cout << "[" << t->getStringRep() << "] ";
 		outFile << "[" << t->getStringRep() << "] ";
-		if (t->getStringRep() == "\n")
-		{
-			lines++;
-		}
 		t = t->getNext();
 	}
-	cout << endl << "Number of lines: " << lines << endl;
 	lines = 0;
 	//commentsRemoved = removeComments(tokens);
 
-	cout << "Comments removed: " << commentsRemoved << endl;
-	cout << "\Categorized Tokens:\n";
+	//cout << "Comments removed: " << commentsRemoved << endl;
+	
 	/*Test your tokenization of the file by traversing the tokens list and printing out the tokens*/
+	
+	
+	//Categorized TokenList	
 	t = tokens.getFirst();
-	string details;
-	int width;
-	cout << setw(20) << "Token" << "|" << setw(5) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
-	while(t) {
+	cout << "\nCategorized Tokens:\n";
+	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+	outFile << "\nCategorized Tokens:\n";
+	outFile << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+	while (t) {
 		tokens.findAndSetTokenDetails(t);
 		details = "N/A";
 		width = 0;
+
+		tokenTypeInt = t->getTokenType();
+		if (tokenTypeInt == 0)
+			tokenType = "T_Operator";
+		else if (tokenTypeInt == 1)
+			tokenType = "T_Identifier";
+		else if (tokenTypeInt == 2)
+			tokenType = "T_Literal";
+		else if (tokenTypeInt == 3)
+			tokenType = "T_CommentBody";
+		else tokenType = "T_Other";
+
 		if (t->getTokenDetails() != NULL)
 		{
 			details = t->getTokenDetails()->type;
 			width = t->getTokenDetails()->width;
 		}
-		cout << setw(20) << t->getStringRep() << "|" << setw(5) << t->getTokenType() << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
-		if (t->getStringRep() == "\n")
-		{
-			lines++;
-		}
+		cout << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		outFile << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
 		t = t->getNext();
 	}
-	cout << endl << "Number of lines: " << lines << endl;
 
 	conditionalTokens = findAllConditionalExpressions(tokens);
 	if (conditionalTokens != NULL)
 		t = conditionalTokens->getFirst();
+
+	//Conditional Token List;
+	cout << "Conditional Token List:\n"; 
+	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+	outFile << "Conditional Token List:\n";
+	outFile << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
 	while (t) {
-		cout << "[" << t->getStringRep() << "] " << endl;
-		outFile << "[" << t->getStringRep() << "] " << endl;
-		if (t->getStringRep() == "\n")
+		tokens.findAndSetTokenDetails(t);
+		details = "N/A";
+		width = 0;
+
+		tokenTypeInt = t->getTokenType();
+		if (tokenTypeInt == 0)
+			tokenType = "T_Operator";
+		else if (tokenTypeInt == 1)
+			tokenType = "T_Identifier";
+		else if (tokenTypeInt == 2)
+			tokenType = "T_Literal";
+		else if (tokenTypeInt == 3)
+			tokenType = "T_CommentBody";
+		else tokenType = "T_Other";
+
+		if (t->getTokenDetails() != NULL)
 		{
-			lines++;
+			details = t->getTokenDetails()->type;
+			width = t->getTokenDetails()->width;
 		}
+		cout << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		outFile << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
 		t = t->getNext();
 	}
 	sourceFile.close();

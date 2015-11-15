@@ -1,3 +1,7 @@
 SIgnAL r : std_logic_veCTor(500 downto 3);
 
 r := o"12345";
+xor
+if wow such token list of x"29292" xor then
+
+weeeeee having some fun with tokens

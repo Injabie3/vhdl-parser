@@ -197,8 +197,18 @@ void TokenList::findAndSetTokenDetails(Token *token)
 			return;
 		}
 	}
+	//#2 - Operators
+	//Loop to check array of operators all in lowercase. Note to self to change 28to a defined constant later.
+	for (int ii = 0; ii < 28; ii++)
+	{
+		if (stringRepLower == OPERATORS[ii])
+		{
+			token->type = T_Operator;
+			return;
+		}
+	}
 
-	//#2 - Identifiers
+	//#3 - Identifiers
 	//Check if first character is alpha, and there are no illegal characters for identifiers
 	if (stringRepLower.find_first_of(ALPHA, 0) == 0 && stringRepLower.find_first_of(DELIMITERS, 0) == -1 )
 	{
@@ -250,7 +260,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 
 		return;
 	}
-	//#3 - Literals
+	//#4 - Literals
 	//Check for two instances of '' or "", or if token contains numerals only, or true false
 	else if ((checkQuote1 != -1 && checkQuote2 != -1) || checkNonNumeral == -1 || stringRepLower == "false" || stringRepLower == "true")
 	{
@@ -282,17 +292,6 @@ void TokenList::findAndSetTokenDetails(Token *token)
 			token->setTokenDetails("std_logic_vector", bitVectorType*(checkQuote2 - checkQuote1-1));
 		}
 		return;
-	}
-	//#4 - Operators
-	//Loop to check array of operators all in lowercase. Note to self to change 28to a defined constant later.
-	for (int ii = 0; ii < 28; ii++)	
-	{
-		if (stringRepLower == OPERATORS[ii])
-		{
-			token->type = T_Operator;
-			token->setTokenDetails("operator", 0);
-			return;
-		}
 	}
 
 	//#5 - Everything else: We can't find anything matching by this point, so set type to other.
@@ -573,14 +572,24 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 	{
 		lowerStringRep = stringLower(move);
 		//If we run into if, elsif, or then, toggle conditionalStatement
-		if (lowerStringRep == "if" || lowerStringRep == "elsif" || lowerStringRep == "then")
+		if (lowerStringRep == "if" || lowerStringRep == "elsif")
+			conditionalStatement = true;
+		else if (lowerStringRep == "then")
 		{
 			if (conditionalStatement == true)
 			{
 				conditionalStatement = false;
 				newList->append("\n");
 			}
-			else conditionalStatement = true;
+		}
+		else if (lowerStringRep == "end") //Detect end if to avoid conflict with the above if.
+		{
+			temp = move->getNext();
+			lowerStringRep = stringLower(temp);
+			if (lowerStringRep == "if") //Make move point to the "if" token so that when we iterate, we skip over it and don't cause undesired results.
+			{
+				move = temp;
+			}
 		}
 		else if (conditionalStatement)
 		{
@@ -602,10 +611,14 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 
 
 string stringLower(Token *token)
-//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string.
+//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
 {
 	string stringRepLower = "";		//The string in the token in all lowercase.
 	char *buffer = NULL;			//The string held in a character array.
+	
+	if (token == NULL) //If NULL token, return empty string.
+		return "";
+
 	buffer = new char[token->getStringRep().length() + 1];
 	strcpy(buffer, token->getStringRep().c_str());
 	for (int ii = 0; ii < (int)token->getStringRep().length(); ii++)

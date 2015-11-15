@@ -223,7 +223,7 @@ int removeTokensOfType(TokenList &tokenList, tokenType type);
 //tokenList is NOT modified
 TokenList* findAllConditionalExpressions(const TokenList &tokenList);
 
-//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string.
+//Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
 string stringLower(Token *token); 
 
 #endif /* PARSERCLASSES_H_ */

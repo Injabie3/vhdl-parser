@@ -12,6 +12,9 @@ findAndSetTokenDetails
 			- check previous token to see if it contains "--"
 			- check if the current token is not a \n or \r
 			- If both statements above are true, then token is a comment body
+		- operators
+			- Compare local stringRep of token to operators array to see if there is a match.
+				- If matched, then categorize as operator.
 		- identifiers
 			- Check if first character is a letter.
 			- check to see that there are no illegal ID characters (eg. delimiters)
@@ -46,9 +49,6 @@ findAndSetTokenDetails
 			- Check if first character is box - then type is std_logic_vector
 				- Find length between ""
 				- multiply that length accordingly depending on binary/octal/hex and that is width
-		- operators
-			- Compare local stringRep of token to operators array to see if there is a match.
-				- If matched, then categorize as operator.
 		- others
 			- last case, take care of everything else.
 			
@@ -56,14 +56,11 @@ findAndSetTokenDetails
 			
 findAllConditionalExpressions
 	- While the pointer to the current token is not NULL:
-		- Traverse TokenList until if, elsif, (or then) is found in the string token.
-		- Take the next token after the if, elsif or then token.
-		- While the current token doesn't contain the if, else, or then statement:
-			- Make a copy of the token, and append to new TokenList.
-			- Go to next token
+		- If "if" or "elsif" is found, set conditional flag to true.
+		- If "then" is found, set conditional flag to false.
+		- If conditional flag is true, make a copy of the token, and append to new TokenList.
+		- Go to next token
 	- Return pointer to new TokenList.
-	
-
 			
 			
 			
