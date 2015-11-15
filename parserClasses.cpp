@@ -311,6 +311,7 @@ void Tokenizer::prepareNextToken()
 {
 	/*Fill in implementation */
 	string token = "";	//The token that we will be appending at the end.
+	string tempStr = *str;	//Temp string, used to solve bug when <> are not separated.
 	int firstChar = 0;	//Index of first character
 	int lastChar = 0;	//Index of character right after the last character of token
 
@@ -395,9 +396,11 @@ void Tokenizer::prepareNextToken()
 	}
 	else if (firstChar == checkDelimiter) //First character is delimiter (all other cases)
 	{
-		if (firstChar + 1 == checkSecondDelimiter) //Check if the character following the first token character is a two character delimiter
+		if (firstChar + 1 == checkSecondDelimiter && checkSecondDelimiter != -1) //Check if the character following the first token character is a two character delimiter.
 		{
-			lastChar = checkSecondDelimiter + 1;
+			if (tempStr[firstChar] != '<' && tempStr[checkSecondDelimiter] != '>') //Bug fix to separate <>.
+				lastChar = checkSecondDelimiter + 1;
+			else lastChar = firstChar + 1; //Same as this else case right below.
 		}
 		else //We're dealing with single character delimiter.
 		{
