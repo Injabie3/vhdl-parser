@@ -572,15 +572,14 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 	{
 		lowerStringRep = stringLower(move);
 		//If we run into if, elsif, or then, toggle conditionalStatement
-		if (lowerStringRep == "if" || lowerStringRep == "elsif")
-			conditionalStatement = true;
-		else if (lowerStringRep == "then")
+		if (lowerStringRep == "if" || lowerStringRep == "elsif" || lowerStringRep == "else" || lowerStringRep == "then" || lowerStringRep == "when")
 		{
 			if (conditionalStatement == true)
 			{
 				conditionalStatement = false;
 				newList->append("\n");
 			}
+			else conditionalStatement = true;
 		}
 		else if (lowerStringRep == "end") //Detect end if to avoid conflict with the above if.
 		{

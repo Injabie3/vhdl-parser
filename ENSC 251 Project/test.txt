@@ -5,3 +5,4 @@ xor
 if wow such token list of x"29292" xor then
 
 weeeeee having some fun with tokens
+when x = 3 else 1;

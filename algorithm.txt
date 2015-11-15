@@ -56,9 +56,9 @@ findAndSetTokenDetails
 			
 findAllConditionalExpressions
 	- While the pointer to the current token is not NULL:
-		- If "if" or "elsif" is found, set conditional flag to true.
-		- If "then" is found, set conditional flag to false.
-		- If conditional flag is true, make a copy of the token, and append to new TokenList.
+		- If "if", "elsif", "else", or "when" is found, toggle conditional flag.
+		- Else if "end" is found, check next token to see if it's an "if" and handle accordingly.
+		- Else if conditional flag is true, make a copy of the token, and append to new TokenList.
 		- Go to next token
 	- Return pointer to new TokenList.
 			

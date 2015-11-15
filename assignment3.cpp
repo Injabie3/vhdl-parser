@@ -32,6 +32,7 @@ int main() {
 	int tokenTypeInt;
 	string tokenType;
 	string details;
+	string stringRep;
 	int width;
 
 	//Read in a file line-by-line and tokenize each line
@@ -106,8 +107,14 @@ int main() {
 			details = t->getTokenDetails()->type;
 			width = t->getTokenDetails()->width;
 		}
-		cout << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
-		outFile << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+
+		if (t->getStringRep() == "\n")
+			stringRep = "(new line)";
+		else
+			stringRep = t->getStringRep();
+
+		cout << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		outFile << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
 		t = t->getNext();
 	}
 
@@ -141,8 +148,14 @@ int main() {
 			details = t->getTokenDetails()->type;
 			width = t->getTokenDetails()->width;
 		}
-		cout << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
-		outFile << setw(20) << t->getStringRep() << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+
+		if (t->getStringRep() == "\n")
+			stringRep = "(new line)";
+		else
+			stringRep = t->getStringRep();
+
+		cout << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		outFile << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
 		t = t->getNext();
 	}
 	sourceFile.close();
