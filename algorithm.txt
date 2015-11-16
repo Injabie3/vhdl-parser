@@ -29,6 +29,7 @@ findAndSetTokenDetails
 					- http://stackoverflow.com/questions/194465/how-to-parse-a-string-to-an-int-in-c for into on string to int conversion
 					- take the difference of the absolute value of the two, and add 1 to it.
 					- This is the width of the token. Store accordingly
+				- Check previous tokens to see if there is identifier with same name, and set it's tokenDetails if so.
 			# If the previous token was a ",", check previous tokens (provided they are not NULL) until you hit a \n to see if you can find "signal" or "variable".
 				# If true, then find the token after : that appears after the current token
 				# Take that token as the type.
