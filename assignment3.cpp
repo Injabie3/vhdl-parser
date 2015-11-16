@@ -82,12 +82,18 @@ int main() {
 	
 	//Categorized TokenList	
 	t = tokens.getFirst();
+	while (t)
+	{
+		tokens.findAndSetTokenDetails(t);
+		t = t->getNext();
+	}
 	cout << "\nCategorized Tokens:\n";
 	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
 	outFile << "\nCategorized Tokens:\n";
 	outFile << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+
+	t = tokens.getFirst();
 	while (t) {
-		tokens.findAndSetTokenDetails(t);
 		details = "N/A";
 		width = 0;
 

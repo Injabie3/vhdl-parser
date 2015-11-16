@@ -145,8 +145,8 @@ void TokenList::findAndSetTokenDetails(Token *token)
 
 	int bitVectorType = 0;			//Used to tell if bit vector is binary (2), octal (3), or hex (4)
 
-	int bound1 = 0;					//First bound of a vector, used to determine length of identifier.
-	int bound2 = 0;					//Second bound of a vector, used to determine length of identifier.
+	int bound1 = -1;				//First bound of a vector, used to determine length of identifier. Initialize to -1 so the check to see whether or not it is a vector is easier later.
+	int bound2 = -1;				//Second bound of a vector, used to determine length of identifier. Initialize to -1 so the check to see whether or not it is a vector is easier later.
 
 	string stringRepLower = "";		//The string in the token in all lowercase.
 	string prevStringRepLower = "";	//The previous token's string in all lowercase, if it exists.
@@ -233,14 +233,29 @@ void TokenList::findAndSetTokenDetails(Token *token)
 					bound1 = stoi(type->getNext()->getNext()->getStringRep());
 					bound2 = stoi(type->getNext()->getNext()->getNext()->getNext()->getStringRep());
 					token->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
-					return;
 				}
 				else
 				{
 					//<type>
 					token->setTokenDetails(nextStringRepLower, 0);
-					return;
 				}
+
+				//Check previous tokens to see if there is an identifier with the same name.
+				here = head; //Set here to the head of the list.
+				while (here != token)
+				{
+					prevStringRepLower = stringLower(here);
+					if (prevStringRepLower == stringRepLower)
+					{
+						if (bound1 == -1 || bound2 == -1) //Not a vector
+							here->setTokenDetails(nextStringRepLower, 0);
+						else //Vector
+							here->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
+					}
+					here = here->getNext();
+				}
+				
+				return;
 			}
 		}
 
