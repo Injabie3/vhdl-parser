@@ -44,14 +44,13 @@ Token::Token(const Token &token)
 	next = token.getNext();
 	prev = token.getPrev();
 	stringRep = token.getStringRep();
+	type = token.getTokenType();
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
 		details->type = token.getTokenDetails()->type;
 		details->width = token.getTokenDetails()->width;
 	}
-
-	//Check if tokenType should be initialized here.
 }
 
 //Overloaded assignment operator for Token class
@@ -62,14 +61,13 @@ void Token::operator =(const Token& token)
 	next = token.getNext();
 	prev = token.getPrev();
 	stringRep = token.getStringRep();
+	type = token.getTokenType();
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
 		details->type = token.getTokenDetails()->type;
 		details->width = token.getTokenDetails()->width;
 	}
-
-	//Check if tokenType should be initialized here.
 }
 
 //Destructor for Token class

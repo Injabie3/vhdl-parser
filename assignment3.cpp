@@ -123,8 +123,46 @@ int main() {
 		outFile << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
 		t = t->getNext();
 	}
+	
+	//removeTokensOfType(tokens, T_Identifier);
+	t = tokens.getFirst();
+	cout << "Remove identifiers:\n";
+	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+	outFile << "Remove identifiers:\n";
+	outFile << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+	while (t) {
+		tokens.findAndSetTokenDetails(t);
+		details = "N/A";
+		width = 0;
 
+		tokenTypeInt = t->getTokenType();
+		if (tokenTypeInt == 0)
+			tokenType = "T_Operator";
+		else if (tokenTypeInt == 1)
+			tokenType = "T_Identifier";
+		else if (tokenTypeInt == 2)
+			tokenType = "T_Literal";
+		else if (tokenTypeInt == 3)
+			tokenType = "T_CommentBody";
+		else tokenType = "T_Other";
+
+		if (t->getTokenDetails() != NULL)
+		{
+			details = t->getTokenDetails()->type;
+			width = t->getTokenDetails()->width;
+		}
+
+		if (t->getStringRep() == "\n")
+			stringRep = "(new line)";
+		else
+			stringRep = t->getStringRep();
+
+		cout << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		outFile << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		t = t->getNext();
+	}
 	conditionalTokens = findAllConditionalExpressions(tokens);
+	
 	if (conditionalTokens != NULL)
 		t = conditionalTokens->getFirst();
 
