@@ -6,7 +6,7 @@ r
 r
 asdklfjklasdf
 wow
-omg
+omg true false true
 variable wow: trolltype;
 r
 SIgnAL r : std_logic_veCTor(500 downto 3);

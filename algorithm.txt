@@ -15,6 +15,15 @@ findAndSetTokenDetails
 		- operators
 			- Compare local stringRep of token to operators array to see if there is a match.
 				- If matched, then categorize as operator.
+		- literals
+			- check for two instances of '' or "", or if token contains numerals only, or true false.
+			- If true, then categorize as literal.
+			- If first character is ', then type is std_logic. No width
+			- If first character is ", then type is std_logic_vector. Width = difference between " positions
+			- if first character is numeral, then type is integer. No width
+			- Check if first character is box - then type is std_logic_vector
+				- Find length between ""
+				- multiply that length accordingly depending on binary/octal/hex and that is width
 		- identifiers
 			- Check if first character is a letter.
 			- check to see that there are no illegal ID characters (eg. delimiters)
@@ -41,19 +50,8 @@ findAndSetTokenDetails
 					# take the difference of the absolute value of the two, and add 1 to it.
 					# This is the width of the token. Store accordingly
 			- If above is not satisfied, check all previous tokens to see if there is another identifier with same name, and copy its contents if needed.
-		- literals
-			- check for two instances of '' or "", or if token contains numerals only, or true false.
-			- If true, then categorize as literal.
-			- If first character is ', then type is std_logic. No width
-			- If first character is ", then type is std_logic_vector. Width = difference between " positions
-			- if first character is numeral, then type is integer. No width
-			- Check if first character is box - then type is std_logic_vector
-				- Find length between ""
-				- multiply that length accordingly depending on binary/octal/hex and that is width
 		- others
 			- last case, take care of everything else.
-			
-			
 			
 findAllConditionalExpressions
 	- While the pointer to the current token is not NULL:

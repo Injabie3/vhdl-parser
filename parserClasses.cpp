@@ -205,14 +205,45 @@ void TokenList::findAndSetTokenDetails(Token *token)
 			return;
 		}
 	}
+	//#3 - Literals
+	//Check for two instances of '' or "", or if token contains numerals only, or true false
+	if ((checkQuote1 != -1 && checkQuote2 != -1) || checkNonNumeral == -1 || stringRepLower == "false" || stringRepLower == "true")
+	{
+		token->type = T_Literal;
+		if (stringRepLower == "false" || stringRepLower == "true") //Type is boolean
+		{
+			//Set token details using the class public function
+			token->setTokenDetails("boolean", 0);
+		}
+		else if (checkQuote1 == 0)	//First character is " or '
+		{
+			if (stringRepLower[0] == '\'') //std_logic
+				token->setTokenDetails("std_logic", 0);
+			else //std_logic_vector, with the width being the difference between the two locations of the quotes
+				token->setTokenDetails("std_logic_vector", checkQuote2 - checkQuote1 - 1);
+		}
+		else if (checkNonNumeral == -1) //Integer
+		{
+			token->setTokenDetails("integer", 0);
+		}
+		else //Bit vectors - std_logic_vector
+		{
 
-	//#3 - Identifiers
+			if (stringRepLower[0] == 'b') //Binary
+				bitVectorType = 2;
+			else if (stringRepLower[0] == 'o') //Octal
+				bitVectorType = 3;
+			else bitVectorType = 4;
+			token->setTokenDetails("std_logic_vector", bitVectorType*(checkQuote2 - checkQuote1 - 1));
+		}
+		return;
+	}
+	//#4 - Identifiers
 	//Check if first character is alpha, and there are no illegal characters for identifiers
-	if (stringRepLower.find_first_of(ALPHA, 0) == 0 && stringRepLower.find_first_of(DELIMITERS, 0) == -1 )
+	else if (stringRepLower.find_first_of(ALPHA, 0) == 0 && stringRepLower.find_first_of(DELIMITERS, 0) == -1 )
 	{
 		token->type = T_Identifier;
 
-		//Still a WIP
 		if (token->getPrev() != NULL) //Check if previous token exists
 		{
 			prevStringRepLower = stringLower(token->getPrev());
@@ -252,7 +283,6 @@ void TokenList::findAndSetTokenDetails(Token *token)
 					}
 					here = here->getNext();
 				}
-				
 				return;
 			}
 		}
@@ -273,40 +303,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 
 		return;
 	}
-	//#4 - Literals
-	//Check for two instances of '' or "", or if token contains numerals only, or true false
-	else if ((checkQuote1 != -1 && checkQuote2 != -1) || checkNonNumeral == -1 || stringRepLower == "false" || stringRepLower == "true")
-	{
-		token->type = T_Literal;
-		if (stringRepLower == "false" || stringRepLower == "true") //Type is boolean
-		{
-			//Set token details using the class public function
-			token->setTokenDetails("boolean", 0);
-		}
-		else if (checkQuote1 == 0)	//First character is " or '
-		{
-			if (stringRepLower[0] == '\'') //std_logic
-				token->setTokenDetails("std_logic", 0);
-			else //std_logic_vector, with the width being the difference between the two locations of the quotes
-				token->setTokenDetails("std_logic_vector", checkQuote2 - checkQuote1-1);
-		}
-		else if (checkNonNumeral == -1) //Integer
-		{
-			token->setTokenDetails("integer", 0);
-		}
-		else //Bit vectors - std_logic_vector
-		{
-			
-			if (stringRepLower[0] == 'b') //Binary
-				bitVectorType = 2;
-			else if (stringRepLower[0] == 'o') //Octal
-				bitVectorType = 3;
-			else bitVectorType = 4;
-			token->setTokenDetails("std_logic_vector", bitVectorType*(checkQuote2 - checkQuote1-1));
-		}
-		return;
-	}
-
+	
 	//#5 - Everything else: We can't find anything matching by this point, so set type to other.
 	token->type = T_Other;
 	return;
