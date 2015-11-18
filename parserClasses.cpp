@@ -230,7 +230,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 		{
 
 			if (stringRepLower[0] == 'b') //Binary
-				bitVectorType = 2;
+				bitVectorType = 1;
 			else if (stringRepLower[0] == 'o') //Octal
 				bitVectorType = 3;
 			else bitVectorType = 4;

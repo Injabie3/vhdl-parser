@@ -15,14 +15,23 @@ r := o"12345";
 xor
 
 
-r
+r R R R R R R
+rR R R R R R R R
+-- testes teste st est es tets est s 
 
 r
 wow wow wow test r wow
 r
 r
 r
-
+if this is a condition then
+elsif this is also then
+x"22222"
+b"1000101010100"
+o"17171717171"
+X"28292"
+B"1010100111"
+O"17516151"
 
 r
 r
