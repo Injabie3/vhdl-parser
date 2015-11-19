@@ -217,8 +217,8 @@ void TokenList::findAndSetTokenDetails(Token *token)
 		}
 		else if (checkQuote1 == 0)	//First character is " or '
 		{
-			if (stringRepLower[0] == '\'') //std_logic
-				token->setTokenDetails("std_logic", 0);
+			if (stringRepLower[0] == '\'') //std_logic. Set to 1 as instructed in @531: http://puu.sh/lqH91/e2256043c4.png
+				token->setTokenDetails("std_logic", 1);
 			else //std_logic_vector, with the width being the difference between the two locations of the quotes
 				token->setTokenDetails("std_logic_vector", checkQuote2 - checkQuote1 - 1);
 		}
