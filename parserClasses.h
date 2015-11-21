@@ -41,8 +41,6 @@ const string KEYWORDS[97] = { "abs", "access", "after", "alias", "all", "and", "
 
 const string OPERATORS[28] = { "**", "abs", "not", "*", "/", "mod", "rem", "+", "-", "&", "sll", "srl", "sla", "sra", "rol", "ror", "=", "/=", "<", "<=", ">", ">=", "and", "or", "nand", "nor", "xor", "xnor" };
 
-const string CONDITIONAL[3] = { "if", "elsif", "then" };
-
 //Token class for a doubly-linked list of string tokens
 class Token {
 private:

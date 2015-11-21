@@ -45,6 +45,7 @@ Token::Token(const Token &token)
 	prev = token.getPrev();
 	stringRep = token.getStringRep();
 	type = token.getTokenType();
+	_isKeyword = token._isKeyword;
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
@@ -62,6 +63,7 @@ void Token::operator =(const Token& token)
 	prev = token.getPrev();
 	stringRep = token.getStringRep();
 	type = token.getTokenType();
+	_isKeyword = token._isKeyword;
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
