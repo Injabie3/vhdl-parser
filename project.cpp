@@ -7,7 +7,7 @@
 using namespace std;
 
 //Print out the list in a nice format.
-void printList(const TokenList theList);
+void printList(TokenList *theList);
 
 //Function executes error checking on the token list, and outputs the error to the screen, depending on the mode set.
 void statistics(TokenList &theList, bool verbose, ostream& outputStream);
@@ -24,6 +24,7 @@ int main() {
 	TokenList literalTokens;
 	TokenList commentBodyTokens;
 	TokenList otherTokens;
+	TokenList *conditionalStatements = NULL;
 
 	int lines = 0; //number of lines
 	int tokenNumber = 0; //number of tokens
@@ -88,11 +89,11 @@ int main() {
 		t = t->getNext();
 	}
 
-	printList(identifierTokens);
-	printList(operatorTokens);
-	printList(literalTokens);
-	printList(commentBodyTokens);
-	printList(otherTokens);
+	printList(&identifierTokens);
+	printList(&operatorTokens);
+	printList(&literalTokens);
+	printList(&commentBodyTokens);
+	printList(&otherTokens);
 	
 	int missingThen = 0;
 	int missingEndIf = 0;
@@ -102,13 +103,16 @@ int main() {
 	cout << "Missing endif: " << missingEndIf << endl;
   /* Create operator,identifier,literal, etc. tokenLists from the master list of tokens */
 	
+	conditionalStatements = findAllConditionalExpressions(tokens);
+
+	printList(conditionalStatements);
 	statistics(tokens, true, cout);
 
 	return 0;
 }
 
 //Print out the list in a nice format.
-void printList(const TokenList theList)
+void printList(TokenList *theList)
 {
 	int tokenTypeInt;
 	string tokenType;
@@ -116,7 +120,7 @@ void printList(const TokenList theList)
 	string stringRep;
 	int width;
 
-	Token *t = theList.getFirst();
+	Token *t = theList->getFirst();
 	cout << endl;
 	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
 	while (t) {
@@ -158,6 +162,7 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	Token *move = theList.getFirst();
 	int numberLines = 0;	//Number of lines
 	int numberTokens = 0;	//Number of tokens
+	int numberConditionalStatements = 0; //Number of conditional statements
 	int missingThen = 0;	//Number of missing thens
 	int missingEndIf = 0;	//Number of missing end ifs
 
