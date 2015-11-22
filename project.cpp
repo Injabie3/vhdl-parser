@@ -5,7 +5,12 @@
 #include <iomanip>
 
 using namespace std;
+
+//Print out the list in a nice format.
 void printList(const TokenList theList);
+
+//Function executes error checking on the token list, and outputs the error to the screen, depending on the mode set.
+void statistics(TokenList &theList, bool verbose, ostream& outputStream);
 
 //Example Test code for interacting with your Token, TokenList, and Tokenizer classes
 //Add your own code to further test the operation of your Token, TokenList, and Tokenizer classes
@@ -13,12 +18,15 @@ int main() {
 	ifstream sourceFile;
 	TokenList tokens;
 
-  //Lists for types of tokens
-  TokenList operatorTokens;
-  TokenList identifierTokens;
-  TokenList literalTokens;
-  TokenList commentBodyTokens;
-  TokenList otherTokens;
+	//Lists for types of tokens
+	TokenList operatorTokens;
+	TokenList identifierTokens;
+	TokenList literalTokens;
+	TokenList commentBodyTokens;
+	TokenList otherTokens;
+
+	int lines = 0; //number of lines
+	int tokenNumber = 0; //number of tokens
 
 	Tokenizer tokenizer;
 
@@ -36,7 +44,12 @@ int main() {
 		tokenizer.setString(&line);
 		while(!tokenizer.isComplete()) {
 			tokens.append(tokenizer.getNextToken());
+			tokenNumber++;
 		}
+
+		//Re-insert newline that was removed by the getline function to keep track of the number of lines in the code.
+		tokens.append("\n");
+		lines++; //number of lines
 	}
 
 
@@ -80,13 +93,21 @@ int main() {
 	printList(literalTokens);
 	printList(commentBodyTokens);
 	printList(otherTokens);
+	
+	int missingThen = 0;
+	int missingEndIf = 0;
+	checkErrorConditionalStatements(&tokens, missingThen, missingEndIf);
 
+	cout << "Missing then: " << missingThen << endl;
+	cout << "Missing endif: " << missingEndIf << endl;
   /* Create operator,identifier,literal, etc. tokenLists from the master list of tokens */
-
+	
+	statistics(tokens, true, cout);
 
 	return 0;
 }
 
+//Print out the list in a nice format.
 void printList(const TokenList theList)
 {
 	int tokenTypeInt;
@@ -128,4 +149,36 @@ void printList(const TokenList theList)
 		t = t->getNext();
 	}
 	cout << endl << endl;
+}
+
+//Function executes error checking on the token list, and outputs the error to the screen, depending on the mode set.
+//List must have \n appended after each line of tokens!
+void statistics(TokenList &theList, bool verbose, ostream& outputStream)
+{
+	Token *move = theList.getFirst();
+	int numberLines = 0;	//Number of lines
+	int numberTokens = 0;	//Number of tokens
+	int missingThen = 0;	//Number of missing thens
+	int missingEndIf = 0;	//Number of missing end ifs
+
+	//Get number of lines and tokens
+	while (move)
+	{
+		if (move->getStringRep() == "\n")
+		{
+			numberLines++;
+			numberTokens--;
+		}
+		numberTokens++;
+		move = move->getNext();
+	}
+
+	//Check for missing "then"s and "end if"s
+	checkErrorConditionalStatements(&theList, missingThen, missingEndIf);
+
+	outputStream << "# of tokens: " << numberTokens << endl;
+	outputStream << "# of lines: " << numberLines << endl;
+	outputStream << "# of missing \"then\"s: " << missingThen << endl;
+	outputStream << "# of missing \"end if\"s: " << missingEndIf << endl;
+
 }

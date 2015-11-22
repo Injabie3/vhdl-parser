@@ -259,11 +259,17 @@ void TokenList::findAndSetTokenDetails(Token *token)
 				//If the type is "std_logic_vector", check the next few tokens to determine width
 				if (nextStringRepLower == "std_logic_vector")
 				{
-					//<type> ( # downto/to # )
+					//std_logic_vector ( # downto/to # )
 					type = token->getNext()->getNext();
 					bound1 = stoi(type->getNext()->getNext()->getStringRep());
 					bound2 = stoi(type->getNext()->getNext()->getNext()->getNext()->getStringRep());
 					token->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
+				}
+				//If the type is "std_logic", set width to 1.
+				else if (nextStringRepLower == "std_logic")
+				{
+					//std_logic
+					token->setTokenDetails(nextStringRepLower, 1);
 				}
 				else
 				{
@@ -643,4 +649,63 @@ string stringLower(Token *token)
 	delete buffer;	//No need for this character array anymore, so delete and set to NULL
 	buffer = NULL;
 	return stringRepLower;
+}
+
+void checkErrorConditionalStatements(TokenList *currentList, int &missingThen, int &missingEndIf)
+//Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
+//Does not modify the original list
+{
+	Token *current = currentList->getFirst();
+	string stringLowered = "";
+	bool CSflag = false;
+	bool foundThen = false;
+
+	missingThen = 0;
+	missingEndIf = 0;
+
+	while (current)
+	{
+		stringLowered = stringLower(current); //Make the entire string all lowercase
+
+		if (stringLowered == "if" && !CSflag)
+			CSflag = true;
+		else if (stringLowered == "if" && CSflag && !foundThen)
+		{
+			missingEndIf++;
+			missingThen++;
+		}
+		else if (stringLowered == "if" && CSflag && foundThen)
+		{
+			missingEndIf++;
+			foundThen = false;
+		}
+		else if (stringLowered == "then" && CSflag)
+			foundThen = true;
+		else if (stringLowered == "elsif" && foundThen && CSflag)
+			foundThen = false;
+		else if (stringLowered == "elsif" && !foundThen && CSflag)
+			missingThen++;
+		else if (stringLowered == "end" && CSflag)
+		{
+			current = current->getNext();
+			stringLowered = stringLower(current); //Lower the string in the new token
+			if (stringLowered == "if")
+			{
+				CSflag = false;
+				if (!foundThen)
+					missingThen++;
+			}
+
+		}
+		current = current->getNext();
+	}
+
+	if (CSflag && !foundThen)
+	{
+		missingEndIf++;
+		missingThen++;
+	}
+	else if (CSflag)
+		missingEndIf++;
+
 }

@@ -60,7 +60,23 @@ findAllConditionalExpressions
 		- Else if conditional flag is true, make a copy of the token, and append to new TokenList.
 		- Go to next token
 	- Return pointer to new TokenList.
-			
+
+
+checkErrorConditionalExpressions
+	- Point pointer to front of entire token list
+	- While the pointer to the current token is not NULL:
+		- If "if" is found, and CS has not begun, set CS flag to true,
+		- Else if "if" is found, and CS has begun, and there is no previous "then", increment missingEndIf and missingThen
+		- Else if "if" is found, and CS has begun, and there is previous "then", increment missingEndIf, and set foundThen to false.
+		- Else if "then" is found and CS is true, set foundThen flag to true.
+		- Else if "elsif" is found, and foundThen flag is true, set foundThen flag to false.
+		- Else if "elsif" is found, and foundThen flag is false, increment missingThen.
+		- If "end" is found, check next token.
+			- If next token is "if":
+				- Set CS to false.
+				- If foundThen is false, increment missingThen
+		- Go to next token.
+		
 			
 			
 			

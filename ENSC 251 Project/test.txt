@@ -1,45 +1,9 @@
-r test test test
-more wow 
-r
-r
-r
-r
-asdklfjklasdf
-wow
-omg true false true
-variable wow: trolltype;
-r
-SIgnAL r : std_logic_veCTor(500 downto 3);
+if test then test
+if if if
+end if
 
-r := o"12345";
-xor
+if then if then if then
+end if
 
-
-r R R R R R R
-rR R R R R R R R
--- testes teste st est es tets est s 
-
-r
-wow wow wow test r wow
-r
-r
-r
-if this is a condition then
-elsif this is also then
-x"22222"
-b"1000101010100"
-o"17171717171"
-X"28292"
-B"1010100111"
-O"17516151"
-
-r
-r
-
-r
-
-r test wow lalalala dkfjsldkfjslkdf sdf sdf aklsdfjlkas jdfkla 
-if wow such  token list of x"29292" and r - xor then
-
-weeeeee having some fun with tokens
-when x = 3 else 1; <>
+signal test: std_logic;
+'0'
