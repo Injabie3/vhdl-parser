@@ -47,6 +47,7 @@ private:
 	Token *next; //Next pointer for doubly linked list
 	Token *prev; //Previous pointer for doubly linked list
 	string stringRep; //Token value
+	bool conditionalError; //Custom field: Used to keep track of tokens with error, and is used when checking for conditional statement errors when finding properly formed conditional statements.
 	 
 	bool _isKeyword; //true if token is a reserved keyword
 	tokenType type; //enum that holds the type of the token
@@ -125,6 +126,11 @@ public:
 	//Allocates tokenDetails if it doesn't already exist
 	void setTokenDetails(const string &type, int width);
 
+	//Custom accessor function: Returns true if the token is the beginning of a conditional expression, and does not form a proper conditional statement.
+	bool getConditionalError() { return conditionalError; };
+
+	//Custom mutator function: Use this function to set an error if the token is the beginning of a conditional expression, and does not form a proper conditional statement, which can be checked via the accessor function above.
+	void setConditionalError() { conditionalError = true; };
 };
 
 //A doubly-linked list class consisting of Token elements
@@ -224,6 +230,8 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList);
 //Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
 string stringLower(Token *token);
 
-void checkErrorConditionalStatements(TokenList *currentList, int &missingThen, int &missingEndIf);
+//Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
+//Does not modify the original list, and can output in verbose mode.
+void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &missingThen, int &missingEndIf);
 
 #endif /* PARSERCLASSES_H_ */

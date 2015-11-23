@@ -28,6 +28,8 @@ int main() {
 
 	int lines = 0; //number of lines
 	int tokenNumber = 0; //number of tokens
+	int missingThen = 0;
+	int missingEndIf = 0;
 
 	Tokenizer tokenizer;
 
@@ -71,6 +73,7 @@ int main() {
 	Token *copy;
   /* For your testing purposes only */
   /* Ensure that tokens have all type information set*/
+	checkErrorConditionalStatements(&tokens, false, missingThen, missingEndIf);
 	t = tokens.getFirst();
 	while (t)
 	{
@@ -88,16 +91,13 @@ int main() {
 			otherTokens.append(copy);
 		t = t->getNext();
 	}
-
+	printList(&tokens);
 	printList(&identifierTokens);
 	printList(&operatorTokens);
 	printList(&literalTokens);
 	printList(&commentBodyTokens);
 	printList(&otherTokens);
 	
-	int missingThen = 0;
-	int missingEndIf = 0;
-	checkErrorConditionalStatements(&tokens, missingThen, missingEndIf);
 
 	cout << "Missing then: " << missingThen << endl;
 	cout << "Missing endif: " << missingEndIf << endl;
@@ -118,14 +118,18 @@ void printList(TokenList *theList)
 	string tokenType;
 	string details;
 	string stringRep;
+	int error = 0;
 	int width;
 
 	Token *t = theList->getFirst();
 	cout << endl;
-	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << endl;
+	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << "|" << setw(6) << "CS Error?" << endl;
 	while (t) {
 		details = "N/A";
 		width = 0;
+		error = 0;
+		if (t->getConditionalError())
+			error = 1;
 
 		tokenTypeInt = t->getTokenType();
 		if (tokenTypeInt == 0)
@@ -149,7 +153,7 @@ void printList(TokenList *theList)
 		else
 			stringRep = t->getStringRep();
 
-		cout << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << endl;
+		cout << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << "|" << setw(10) << error << endl;
 		t = t->getNext();
 	}
 	cout << endl << endl;
@@ -179,7 +183,7 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	}
 
 	//Check for missing "then"s and "end if"s
-	checkErrorConditionalStatements(&theList, missingThen, missingEndIf);
+	checkErrorConditionalStatements(&theList, false,missingThen, missingEndIf);
 
 	outputStream << "# of tokens: " << numberTokens << endl;
 	outputStream << "# of lines: " << numberLines << endl;

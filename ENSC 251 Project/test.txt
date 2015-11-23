@@ -2,7 +2,7 @@ if test then test
 if if if
 end if
 
-if then if then if then
+if w then if w then if w then
 end if
 
 signal test: std_logic;

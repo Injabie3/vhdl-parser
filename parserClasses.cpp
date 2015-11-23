@@ -46,6 +46,7 @@ Token::Token(const Token &token)
 	stringRep = token.getStringRep();
 	type = token.getTokenType();
 	_isKeyword = token._isKeyword;
+	conditionalError = token.conditionalError;
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
@@ -64,6 +65,7 @@ void Token::operator =(const Token& token)
 	stringRep = token.getStringRep();
 	type = token.getTokenType();
 	_isKeyword = token._isKeyword;
+	conditionalError = token.conditionalError;
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
@@ -580,27 +582,30 @@ int removeTokensOfType(TokenList &tokenList, tokenType type)
 //tokenList is NOT modified
 TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 {
-	TokenList *newList = NULL;	//The tokenlist that will be returned at the end.
+	TokenList *newList = new TokenList;	//The tokenlist that will be returned at the end.
 	Token *temp = NULL;		//Temporary pointer to a token.
 	Token *move = NULL;
 	Token *copiedToken = NULL; //New copy of the token, using copy constructor/overloaded assignment operator
 	bool conditionalStatement = false;	//bool to keep track of if else, elseif, and then was found before.
 	string lowerStringRep = ""; //The lowered string.
-
 	move = tokenList.getFirst(); 
 	
 	while (move != NULL)
 	{
 		lowerStringRep = stringLower(move);
-		//If we run into if, elsif, or then, toggle conditionalStatement
-		if (lowerStringRep == "if" || lowerStringRep == "elsif" || lowerStringRep == "else" || lowerStringRep == "then" || lowerStringRep == "when")
+		//If we run into if, elsif, and there is no error, set conditionalStatement to true
+		if ((lowerStringRep == "if" || lowerStringRep == "elsif" || lowerStringRep == "when") && !(move->getConditionalError()))
+		{
+			conditionalStatement = true;
+		}
+		//If we run into then, end the conditional statement if it is started.
+		else if (lowerStringRep == "then")
 		{
 			if (conditionalStatement == true)
 			{
 				conditionalStatement = false;
 				newList->append("\n");
 			}
-			else conditionalStatement = true;
 		}
 		else if (lowerStringRep == "end") //Detect end if to avoid conflict with the above if.
 		{
@@ -613,10 +618,6 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 		}
 		else if (conditionalStatement)
 		{
-			if (newList == NULL)
-			{
-				newList = new TokenList;
-			}
 			copiedToken = new Token;
 			*copiedToken = *move; //Make a copy of the contents of the token via overloaded assignment operator.
 			newList->append(copiedToken); //Append the copy of the token to the new list.
@@ -651,12 +652,14 @@ string stringLower(Token *token)
 	return stringRepLower;
 }
 
-void checkErrorConditionalStatements(TokenList *currentList, int &missingThen, int &missingEndIf)
+void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &missingThen, int &missingEndIf)
 //Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
-//Does not modify the original list
+//Does not modify the original list, and can output in verbose mode.
 {
 	Token *current = currentList->getFirst();
-	string stringLowered = "";
+	Token *move = NULL;
+	string stringLowered = ""; //Current token's stringRep in lowercase
+	string backTrack = ""; //The stringRep for move, used when traversing backwards to find previous if or elsif
 	bool CSflag = false;
 	bool foundThen = false;
 
@@ -667,24 +670,72 @@ void checkErrorConditionalStatements(TokenList *currentList, int &missingThen, i
 	{
 		stringLowered = stringLower(current); //Make the entire string all lowercase
 
-		if (stringLowered == "if" && !CSflag)
+		if (stringLowered == "if" && !CSflag) //Starting conditional statements
 			CSflag = true;
-		else if (stringLowered == "if" && CSflag && !foundThen)
+		else if (stringLowered == "if" && CSflag && !foundThen) //Missing then and endif
 		{
 			missingEndIf++;
 			missingThen++;
+			move = current->getPrev();
+			while (move) //Set error to previous if or elsif
+			{
+				backTrack = stringLower(move);
+				if (backTrack == "elsif")
+				{
+					move->setConditionalError();
+					break;
+				}
+				if (backTrack == "if")
+				{
+					backTrack = stringLower(move->getPrev());
+					if (backTrack == "end")//Do nothing.
+					{
+					}
+					else
+					{
+						move->setConditionalError();
+						break;
+					}
+				}
+				move = move->getPrev();
+			}
 		}
-		else if (stringLowered == "if" && CSflag && foundThen)
+		else if (stringLowered == "if" && CSflag && foundThen)	//Missing endif, and starting new conditional statement
 		{
 			missingEndIf++;
 			foundThen = false;
 		}
-		else if (stringLowered == "then" && CSflag)
+		else if (stringLowered == "then" && CSflag)	//Found then in a conditional statement
 			foundThen = true;
-		else if (stringLowered == "elsif" && foundThen && CSflag)
+		else if (stringLowered == "elsif" && foundThen && CSflag)	//reached another conditional statement, and then was already found, so set it back to false.
 			foundThen = false;
-		else if (stringLowered == "elsif" && !foundThen && CSflag)
+		else if (stringLowered == "elsif" && !foundThen && CSflag) //Reached another conditional statement without seeing a then.
+		{
 			missingThen++;
+			move = current->getPrev();
+			while (move) //Set error to previous if or elsif
+			{
+				backTrack = stringLower(move);
+				if (backTrack == "elsif")
+				{
+					move->setConditionalError();
+					break;
+				}
+				if (backTrack == "if")
+				{
+					backTrack = stringLower(move->getPrev());
+					if (backTrack == "end")//Do nothing.
+					{
+					}
+					else
+					{
+						move->setConditionalError();
+						break;
+					}
+				}
+				move = move->getPrev();
+			}
+		}
 		else if (stringLowered == "end" && CSflag)
 		{
 			current = current->getNext();
@@ -693,9 +744,39 @@ void checkErrorConditionalStatements(TokenList *currentList, int &missingThen, i
 			{
 				CSflag = false;
 				if (!foundThen)
+				{
 					missingThen++;
+					move = current->getPrev();
+					while (move) //Set error to previous if or elsif
+					{
+						backTrack = stringLower(move);
+						if (backTrack == "elsif")
+						{
+							move->setConditionalError();
+							break;
+						}
+						if (backTrack == "if")
+						{
+							backTrack = stringLower(move->getPrev());
+							if (backTrack == "end")//Do nothing.
+							{
+							}
+							else
+							{
+								move->setConditionalError();
+								break;
+							}
+						}
+						move = move->getPrev();
+					}
+				}
+				foundThen = false;
 			}
 
+		}
+		if (current->getNext() == NULL) //Fixes error when outside loop.
+		{
+			break;
 		}
 		current = current->getNext();
 	}
@@ -704,6 +785,29 @@ void checkErrorConditionalStatements(TokenList *currentList, int &missingThen, i
 	{
 		missingEndIf++;
 		missingThen++;
+		move = current->getPrev();
+		while (move) //Set error to previous if or elsif
+		{
+			backTrack = stringLower(move);
+			if (backTrack == "elsif")
+			{
+				move->setConditionalError();
+				break;
+			}
+			if (backTrack == "if")
+			{
+				backTrack = stringLower(move->getPrev());
+				if (backTrack == "end")//Do nothing.
+				{
+				}
+				else
+				{
+					move->setConditionalError();
+					break;
+				}
+			}
+			move = move->getPrev();
+		}
 	}
 	else if (CSflag)
 		missingEndIf++;
