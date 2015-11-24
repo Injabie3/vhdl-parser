@@ -12,6 +12,9 @@ void printList(TokenList *theList);
 //Function executes error checking on the token list, and outputs the error to the screen, depending on the mode set.
 void statistics(TokenList &theList, bool verbose, ostream& outputStream);
 
+//Function checks a conditional statement list for width/type mismatches, and outputs the error to the screen depending on the mode set.
+void checkConditionalMismatch(TokenList &conditionalList, bool verbose, ostream &outputStream, int &numberTypeMismatch, int &numberWidthMismatch);
+
 //Example Test code for interacting with your Token, TokenList, and Tokenizer classes
 //Add your own code to further test the operation of your Token, TokenList, and Tokenizer classes
 int main() {
@@ -40,6 +43,7 @@ int main() {
 		return 1;
 	}
 
+	tokens.append("\n");
 	while(!sourceFile.eof()) {
 		string line;
 		getline(sourceFile, line);
@@ -73,7 +77,7 @@ int main() {
 	Token *copy;
   /* For your testing purposes only */
   /* Ensure that tokens have all type information set*/
-	checkErrorConditionalStatements(&tokens, false, missingThen, missingEndIf);
+	checkErrorConditionalStatements(&tokens, false, cout, missingThen, missingEndIf);
 	t = tokens.getFirst();
 	while (t)
 	{
@@ -183,11 +187,17 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	}
 
 	//Check for missing "then"s and "end if"s
-	checkErrorConditionalStatements(&theList, false,missingThen, missingEndIf);
+	checkErrorConditionalStatements(&theList, verbose, outputStream, missingThen, missingEndIf);
 
 	outputStream << "# of tokens: " << numberTokens << endl;
 	outputStream << "# of lines: " << numberLines << endl;
 	outputStream << "# of missing \"then\"s: " << missingThen << endl;
 	outputStream << "# of missing \"end if\"s: " << missingEndIf << endl;
+
+}
+
+//Function checks a conditional statement list for width/type mismatches, and outputs the error to the screen depending on the mode set.
+void checkConditionalMismatch(TokenList &conditionalList, bool verbose, ostream &outputStream, int &numberTypeMismatch, int &numberWidthMismatch)
+{
 
 }

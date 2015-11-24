@@ -11,9 +11,10 @@
 #ifndef PARSERCLASSES_H_
 #define PARSERCLASSES_H_
 
-//Use only the string library DO NOT add any other libraries
+//Allowed to include anything part of the std library (@467 on Piazza: http://puu.sh/lwsCj/118cfb8a1c.png):
 #include <string>
-
+#include <cstring>
+#include <iostream>
 using namespace std;
 
 enum tokenType {T_Operator, T_Identifier, T_Literal, T_CommentBody, T_Other};
@@ -40,6 +41,8 @@ const string NUMERAL = "0123456789";
 const string KEYWORDS[97] = { "abs", "access", "after", "alias", "all", "and", "architecture", "array", "assert", "attribute", "begin", "block", "body", "buffer", "bus", "case", "component", "configuration", "constant", "disconnect", "downto", "else", "elsif", "end", "entity", "exit", "file", "for", "function", "generate", "generic", "group", "guarded", "if", "impure", "in", "inertial", "inout", "is", "label", "library", "linkage", "literal", "loop", "map", "mod", "nand", "new", "next", "nor", "not", "null", "of", "on", "open", "or", "others", "out", "package", "port", "postponed", "procedure", "process", "pure", "range", "record", "register", "reject", "rem", "report", "return", "rol", "ror", "select", "severity", "signal", "shared", "sla", "sll", "sra", "srl", "subtype", "then", "to", "transport", "type", "unaffected", "units", "until", "use", "variable", "wait", "when", "while", "with", "xnor", "xor" };
 
 const string OPERATORS[28] = { "**", "abs", "not", "*", "/", "mod", "rem", "+", "-", "&", "sll", "srl", "sla", "sra", "rol", "ror", "=", "/=", "<", "<=", ">", ">=", "and", "or", "nand", "nor", "xor", "xnor" };
+
+const string COMPARISON_OPERATORS[6] = { "=", "/=", "<", "<=", ">",">=" };
 
 //Token class for a doubly-linked list of string tokens
 class Token {
@@ -232,6 +235,9 @@ string stringLower(Token *token);
 
 //Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
 //Does not modify the original list, and can output in verbose mode.
-void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &missingThen, int &missingEndIf);
+void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostream &outputStream, int &missingThen, int &missingEndIf);
 
+void printErrorLine(Token *token, string errorType, ostream& outputStream);
+//Function takes the token causing the error, and prints the entire line where the error occurs, along with the type of error.
+//Must guarantee that the list has starting \n and ending \n to avoid out of bound references!
 #endif /* PARSERCLASSES_H_ */

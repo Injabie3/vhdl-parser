@@ -11,10 +11,12 @@
 //					3.0 - Modifications for Project.
 #define _CRT_SECURE_NO_WARNINGS
 
-//Use only the following libraries:
+//Allowed to include anything part of the std library (@467 on Piazza: http://puu.sh/lwsCj/118cfb8a1c.png):
 #include "parserClasses.h"
 #include <string>
 #include <cstring>
+#include <iostream>
+using namespace std;
 
 //****Token class function definition******
 
@@ -629,8 +631,6 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 	return newList;
 }
 
-
-
 string stringLower(Token *token)
 //Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
 {
@@ -652,7 +652,7 @@ string stringLower(Token *token)
 	return stringRepLower;
 }
 
-void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &missingThen, int &missingEndIf)
+void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostream &outputStream, int &missingThen, int &missingEndIf)
 //Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
 //Does not modify the original list, and can output in verbose mode.
 {
@@ -676,6 +676,10 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &
 		{
 			missingEndIf++;
 			missingThen++;
+
+			if (verbose)	//Print error if verbose output is requested.
+				printErrorLine(current, "Missing then and endif", outputStream);
+
 			move = current->getPrev();
 			while (move) //Set error to previous if or elsif
 			{
@@ -704,6 +708,8 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &
 		{
 			missingEndIf++;
 			foundThen = false;
+			if (verbose)	//Print error if verbose output is requested.
+				printErrorLine(current, "Missing endif", outputStream);
 		}
 		else if (stringLowered == "then" && CSflag)	//Found then in a conditional statement
 			foundThen = true;
@@ -712,6 +718,9 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &
 		else if (stringLowered == "elsif" && !foundThen && CSflag) //Reached another conditional statement without seeing a then.
 		{
 			missingThen++;
+			if (verbose)	//Print error if verbose output is requested.
+				printErrorLine(current, "Missing then", outputStream);
+
 			move = current->getPrev();
 			while (move) //Set error to previous if or elsif
 			{
@@ -736,16 +745,20 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &
 				move = move->getPrev();
 			}
 		}
-		else if (stringLowered == "end" && CSflag)
+		else if (stringLowered == "end" && CSflag) //Reached end token, check for if.
 		{
 			current = current->getNext();
 			stringLowered = stringLower(current); //Lower the string in the new token
 			if (stringLowered == "if")
 			{
 				CSflag = false;
-				if (!foundThen)
+				if (!foundThen) //Missing then from conditional statement
 				{
 					missingThen++;
+
+					if (verbose)	//Print error if verbose output is requested.
+						printErrorLine(current, "Missing then", outputStream);
+					
 					move = current->getPrev();
 					while (move) //Set error to previous if or elsif
 					{
@@ -775,16 +788,19 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &
 
 		}
 		if (current->getNext() == NULL) //Fixes error when outside loop.
-		{
 			break;
-		}
+
 		current = current->getNext();
 	}
 
-	if (CSflag && !foundThen)
+	if (CSflag && !foundThen) //Missing then and endif
 	{
 		missingEndIf++;
 		missingThen++;
+
+		if (verbose)	//Print error if verbose output is requested.
+			printErrorLine(current, "Missing then and endif", outputStream);
+		
 		move = current->getPrev();
 		while (move) //Set error to previous if or elsif
 		{
@@ -810,6 +826,35 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, int &
 		}
 	}
 	else if (CSflag)
+	{
 		missingEndIf++;
+		if (verbose)	//Print error if verbose output is requested.
+			printErrorLine(current, "Missing endif", outputStream);
+	}
+}
 
+void printErrorLine(Token *token, string errorType, ostream& outputStream)
+//Function takes the token causing the error, and prints the entire line where the error occurs, along with the type of error.
+//Must guarantee that the list has starting \n and ending \n to avoid out of bound references!
+{
+	Token *lineEnd = token;
+	Token *lineStart = NULL;
+
+	while (lineEnd->getStringRep() != "\n") //Find \n at the end of the line
+		lineEnd = lineEnd->getNext();
+	lineStart = lineEnd->getPrev();
+	while (lineStart->getStringRep() != "\n") //Find \n at the beginning of line.
+		lineStart = lineStart->getPrev();
+	
+	lineStart = lineStart->getNext(); //Start from first token in the line.
+
+	outputStream << "Error near: ";
+	while (lineStart->getStringRep() != "\n") //Print the error line to the stream.
+	{
+		outputStream << lineStart->getStringRep() << " ";
+		lineStart = lineStart->getNext();
+	}
+	outputStream << "(" << errorType << ")" << endl;	//Output type of error to stream.
+
+	return;
 }
