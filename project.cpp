@@ -13,7 +13,11 @@ void printList(TokenList *theList);
 void statistics(TokenList &theList, bool verbose, ostream& outputStream);
 
 //Function checks a conditional statement list for width/type mismatches, and outputs the error to the screen depending on the mode set.
-void checkConditionalMismatch(TokenList &conditionalList, bool verbose, ostream &outputStream, int &numberTypeMismatch, int &numberWidthMismatch);
+//Array should be in the following format:
+// Element 1: Count of unknown type and width.
+// Element 2: Count of type mismatch.
+// Element 3: Count of width mismatch.
+void checkConditionalMismatch(TokenList *conditionalList, bool verbose, ostream &outputStream, int(&errors)[3]);
 
 //Example Test code for interacting with your Token, TokenList, and Tokenizer classes
 //Add your own code to further test the operation of your Token, TokenList, and Tokenizer classes
@@ -102,9 +106,6 @@ int main() {
 	printList(&commentBodyTokens);
 	printList(&otherTokens);
 	
-
-	cout << "Missing then: " << missingThen << endl;
-	cout << "Missing endif: " << missingEndIf << endl;
   /* Create operator,identifier,literal, etc. tokenLists from the master list of tokens */
 	
 	conditionalStatements = findAllConditionalExpressions(tokens);
@@ -173,6 +174,8 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	int numberConditionalStatements = 0; //Number of conditional statements
 	int missingThen = 0;	//Number of missing thens
 	int missingEndIf = 0;	//Number of missing end ifs
+	int mismatchErrors[3];	//Array for conditional mismatches
+	TokenList *conditionalStatements = NULL;
 
 	//Get number of lines and tokens
 	while (move)
@@ -189,15 +192,64 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	//Check for missing "then"s and "end if"s
 	checkErrorConditionalStatements(&theList, verbose, outputStream, missingThen, missingEndIf);
 
+	//Find conditional statements
+	conditionalStatements = findAllConditionalExpressions(theList,true);
+
+	checkConditionalMismatch(conditionalStatements, verbose, outputStream, mismatchErrors);
+
 	outputStream << "# of tokens: " << numberTokens << endl;
 	outputStream << "# of lines: " << numberLines << endl;
 	outputStream << "# of missing \"then\"s: " << missingThen << endl;
 	outputStream << "# of missing \"end if\"s: " << missingEndIf << endl;
+	outputStream << "# of unknown types/widths: " << mismatchErrors[0] << endl;
+	outputStream << "# of type mismatches: " << mismatchErrors[1] << endl;
+	outputStream << "# of width mismatches: " << mismatchErrors[2] << endl;
 
 }
 
 //Function checks a conditional statement list for width/type mismatches, and outputs the error to the screen depending on the mode set.
-void checkConditionalMismatch(TokenList &conditionalList, bool verbose, ostream &outputStream, int &numberTypeMismatch, int &numberWidthMismatch)
+//Array should be in the following format:
+// Element 1: Count of unknown type and width.
+// Element 2: Count of type mismatch.
+// Element 3: Count of width mismatch.
+void checkConditionalMismatch(TokenList *conditionalList, bool verbose, ostream &outputStream, int (&errors)[3])
 {
+	errors[0] = 0;	//Reset count of unknown type/width (no tokenDetails struct)
+	errors[1] = 0;	//Reset count of type mismatch
+	errors[2] = 0;	//Reset count of width mismatch.
+	Token *current = conditionalList->getFirst();
+	Token *before = NULL;
+	Token *after = NULL;
 
+	while (current)
+	{
+		for (int ii = 0; ii < 6; ii++)
+		{
+			if (current->getStringRep() == COMPARISON_OPERATORS[ii]) //Found a comparison operator. Commence checks.
+			{
+				before = current->getPrev();
+				after = current->getNext();
+
+				if (before->getTokenDetails() == NULL || after->getTokenDetails() == NULL) //No details structure, so can't do comparison check.
+				{
+					errors[0]++;
+					if (verbose)
+						printErrorLine(current, "Unknown type and width", outputStream);
+				}
+				else if (before->getTokenDetails()->type != after->getTokenDetails()->type)	//Type mismatch
+				{
+					errors[1]++;
+					if (verbose)
+						printErrorLine(current, "Type mismatch", outputStream);
+				}
+				else if (before->getTokenDetails()->width != after->getTokenDetails()->width) //Width mismatch
+				{
+					errors[2]++;
+					if (verbose)
+						printErrorLine(current, "Width mismatch", outputStream);
+				}
+			}
+		}
+		current = current->getNext();
+	}
 }

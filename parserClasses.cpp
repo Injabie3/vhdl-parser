@@ -288,9 +288,11 @@ void TokenList::findAndSetTokenDetails(Token *token)
 					prevStringRepLower = stringLower(here);
 					if (prevStringRepLower == stringRepLower)
 					{
-						if (bound1 == -1 || bound2 == -1) //Not a vector
+						if (nextStringRepLower == "std_logic") //std_logic
+							here->setTokenDetails(nextStringRepLower, 1);
+						else if (bound1 == -1 || bound2 == -1) //Not a vector or std_logic
 							here->setTokenDetails(nextStringRepLower, 0);
-						else //Vector
+						else //Vector - std_logic
 							here->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
 					}
 					here = here->getNext();
@@ -582,7 +584,7 @@ int removeTokensOfType(TokenList &tokenList, tokenType type)
 //Example: if (a = true) then
 //Your list should include "(", "a", "=", "true", ")" and "\n" 
 //tokenList is NOT modified
-TokenList* findAllConditionalExpressions(const TokenList &tokenList)
+TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraBeginningLine)
 {
 	TokenList *newList = new TokenList;	//The tokenlist that will be returned at the end.
 	Token *temp = NULL;		//Temporary pointer to a token.
@@ -591,6 +593,9 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList)
 	bool conditionalStatement = false;	//bool to keep track of if else, elseif, and then was found before.
 	string lowerStringRep = ""; //The lowered string.
 	move = tokenList.getFirst(); 
+
+	if (extraBeginningLine) //Append \n at the beginning if requested. Helps for printing out error lines if any.
+		newList->append("\n");
 	
 	while (move != NULL)
 	{

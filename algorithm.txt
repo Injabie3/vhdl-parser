@@ -87,7 +87,17 @@ checkErrorConditionalExpressions
 		- Increment missingEndIf
 		- If verbose is true, output the line with the error type (missing end if) 
 			
-			
+checkConditionalMismatch
+	- Point to the front of the conditional list using temp pointer
+	- Loop through token list to find conditional operator
+		- Have a pointer point to previous and next token.
+		- Compare the two tokens.
+			- If either one is missing tokenDetails, output error if verbose(Unknown type and width) and keep count.
+			- If they don't have matching types, output error if verbose (Type mismatch) and keep count.
+			- If they don't have matching widths, output error if verbose (Width mismatch) and keep count.
+		- Loop and keep checking.
+	
+		
 			
 Code below for operators and keywords:
 			

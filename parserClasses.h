@@ -42,7 +42,7 @@ const string KEYWORDS[97] = { "abs", "access", "after", "alias", "all", "and", "
 
 const string OPERATORS[28] = { "**", "abs", "not", "*", "/", "mod", "rem", "+", "-", "&", "sll", "srl", "sla", "sra", "rol", "ror", "=", "/=", "<", "<=", ">", ">=", "and", "or", "nand", "nor", "xor", "xnor" };
 
-const string COMPARISON_OPERATORS[6] = { "=", "/=", "<", "<=", ">",">=" };
+const string COMPARISON_OPERATORS[6] = { "=", "/=", "<", "<=", ">", ">=" };
 
 //Token class for a doubly-linked list of string tokens
 class Token {
@@ -228,7 +228,7 @@ int removeTokensOfType(TokenList &tokenList, tokenType type);
    //Example: if (a = true) then
    //Your list should include "(", "a", "=", "true", ")" and "\n" 
 //tokenList is NOT modified
-TokenList* findAllConditionalExpressions(const TokenList &tokenList);
+TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraBeginningLine = false);
 
 //Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
 string stringLower(Token *token);
