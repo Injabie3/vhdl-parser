@@ -7,7 +7,7 @@
 using namespace std;
 
 //Print out the list in a nice format.
-void printList(TokenList *theList);
+void printList(TokenList *theList, ostream &outputStream);
 
 //Function executes error checking on the token list, and outputs the error to the screen, depending on the mode set.
 void statistics(TokenList &theList, bool verbose, ostream& outputStream);
@@ -39,9 +39,13 @@ int main() {
 	int missingEndIf = 0;
 
 	Tokenizer tokenizer;
-
+	string fileName;
+	ofstream outFile;
 	//Read in a file line-by-line and tokenize each line
-	sourceFile.open("test.txt");
+	cout << "Enter VHDL file name with extension >>";
+	cin >> fileName;
+	sourceFile.open(fileName);
+	outFile.open("output.txt");
 	if (!sourceFile.is_open()) {
 		cout << "Failed to open file" << endl;
 		return 1;
@@ -68,6 +72,7 @@ int main() {
 	Token *t = tokens.getFirst();
 	while(t) {
 		cout << t->getStringRep() << " ";
+		outFile << t->getStringRep() << " ";
 		t = t->getNext();
 	}
 
@@ -99,44 +104,60 @@ int main() {
 			otherTokens.append(copy);
 		t = t->getNext();
 	}
-	printList(&tokens);
-	printList(&identifierTokens);
-	printList(&operatorTokens);
-	printList(&literalTokens);
-	printList(&commentBodyTokens);
-	printList(&otherTokens);
+
+	//Print out the sorted lists to both the terminal and output file.
+	printList(&tokens, cout);
+	printList(&identifierTokens, cout);
+	printList(&operatorTokens, cout);
+	printList(&literalTokens, cout);
+	printList(&commentBodyTokens, cout);
+	printList(&otherTokens, cout);
+
+	printList(&tokens, outFile);
+	printList(&identifierTokens, outFile);
+	printList(&operatorTokens, outFile);
+	printList(&literalTokens, outFile);
+	printList(&commentBodyTokens, outFile);
+	printList(&otherTokens, outFile);
 	
-  /* Create operator,identifier,literal, etc. tokenLists from the master list of tokens */
-	
+	//Find conditional statements.
 	conditionalStatements = findAllConditionalExpressions(tokens);
 
-	printList(conditionalStatements);
+	//Print out conditional statements to both terminal and output file.
+	printList(conditionalStatements, cout);
+	printList(conditionalStatements, outFile);
+
+	//Run statistics, and print to both terminal and output file.
 	statistics(tokens, true, cout);
+	statistics(tokens, true, outFile);
 
 	return 0;
 }
 
-//Print out the list in a nice format.
-void printList(TokenList *theList)
+//Print out the list in a nice format to the output stream.
+void printList(TokenList *theList, ostream &outputStream)
 {
 	int tokenTypeInt;
-	string tokenType;
-	string details;
-	string stringRep;
-	int error = 0;
-	int width;
+	string tokenType;	//Temporary string to hold the token type of the token.
+	string details;		//Temporary string to hold the token type of a literal/identifier (when applicable)
+	string stringRep;	//Temporary string to hold the string in the token.
+	int error = 0;		//Temporary int to display 1 or 0 for true/false conditional error in token (when applicable)
+	int width;			//Temporary int to hold the width of a literal/identifier (when applicable)
 
 	Token *t = theList->getFirst();
-	cout << endl;
-	cout << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << "|" << setw(6) << "CS Error?" << endl;
+	outputStream << endl;
+	outputStream << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << "|" << setw(6) << "CS Error?" << endl;
+	//Traverse and print out list to the output stream.
 	while (t) {
-		details = "N/A";
-		width = 0;
-		error = 0;
+		details = "N/A";	//Initialize to N/A.
+		width = 0;			//Initialize to no width.
+		error = 0;			//Initialize to no error.
 		if (t->getConditionalError())
 			error = 1;
 
 		tokenTypeInt = t->getTokenType();
+
+		//Change tokenType to the correct token type. Could've used the get functions (bool) for each, but this works as well.
 		if (tokenTypeInt == 0)
 			tokenType = "T_Operator";
 		else if (tokenTypeInt == 1)
@@ -153,15 +174,16 @@ void printList(TokenList *theList)
 			width = t->getTokenDetails()->width;
 		}
 
-		if (t->getStringRep() == "\n")
+		if (t->getStringRep() == "\n") //Indicate new line token.
 			stringRep = "(new line)";
 		else
-			stringRep = t->getStringRep();
+			stringRep = t->getStringRep();	//Store the string into the temp string.
 
-		cout << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << "|" << setw(10) << error << endl;
+		//Output the result on the output stream
+		outputStream << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << "|" << setw(10) << error << endl;
 		t = t->getNext();
 	}
-	cout << endl << endl;
+	outputStream << endl << endl;
 }
 
 //Function executes error checking on the token list, and outputs the error to the screen, depending on the mode set.
@@ -189,6 +211,12 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 		move = move->getNext();
 	}
 
+	if (verbose)
+	{
+		outputStream << "Errors in the token list:\n";
+		outputStream << "=========================\n";
+	}
+
 	//Check for missing "then"s and "end if"s
 	checkErrorConditionalStatements(&theList, verbose, outputStream, missingThen, missingEndIf);
 
@@ -196,7 +224,12 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	conditionalStatements = findAllConditionalExpressions(theList,true);
 
 	checkConditionalMismatch(conditionalStatements, verbose, outputStream, mismatchErrors);
+	
+	if (verbose)
+		outputStream << "\n\n";
 
+	outputStream << "Statistics on the token list:" << endl;
+	outputStream << "=============================" << endl;
 	outputStream << "# of tokens: " << numberTokens << endl;
 	outputStream << "# of lines: " << numberLines << endl;
 	outputStream << "# of missing \"then\"s: " << missingThen << endl;

@@ -1,271 +1,137 @@
-[r] [test] [test] [test] [more] [wow] [r] [r] [r] [r] [asdklfjklasdf] [wow] [omg] [true] [false] [true] [variable] [wow] [:] [trolltype] [;] [r] [SIgnAL] [r] [:] [std_logic_veCTor] [(] [500] [downto] [3] [)] [;] [r] [:=] [o"12345"] [;] [xor] [r] [R] [R] [R] [R] [R] [R] [rR] [R] [R] [R] [R] [R] [R] [R] [--] [testes teste st est es tets est s ] [r] [wow] [wow] [wow] [test] [r] [wow] [r] [r] [r] [if] [this] [is] [a] [condition] [then] [elsif] [this] [is] [also] [then] [x"22222"] [b"1000101010100"] [o"17171717171"] [X"28292"] [B"1010100111"] [O"17516151"] [r] [r] [r] [r] [test] [wow] [lalalala] [dkfjsldkfjslkdf] [sdf] [sdf] [aklsdfjlkas] [jdfkla] [if] [wow] [such] [token] [list] [of] [x"29292"] [and] [r] [-] [xor] [then] [weeeeee] [having] [some] [fun] [with] [tokens] [when] [x] [=] [3] [else] [1] [;] [<] [>] 
-Categorized Tokens:
-               Token|           Type|  KW?| Token Type (if any)|Width (if any)
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                test|   T_Identifier|    0|                 N/A|         0
-                test|   T_Identifier|    0|                 N/A|         0
-                test|   T_Identifier|    0|                 N/A|         0
-                more|   T_Identifier|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-       asdklfjklasdf|   T_Identifier|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                 omg|   T_Identifier|    0|                 N/A|         0
-                true|      T_Literal|    0|             boolean|         0
-               false|      T_Literal|    0|             boolean|         0
-                true|      T_Literal|    0|             boolean|         0
-            variable|   T_Identifier|    1|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                   :|        T_Other|    0|                 N/A|         0
-           trolltype|   T_Identifier|    0|                 N/A|         0
-                   ;|        T_Other|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-              SIgnAL|   T_Identifier|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   :|        T_Other|    0|                 N/A|         0
-    std_logic_veCTor|   T_Identifier|    0|                 N/A|         0
-                   (|        T_Other|    0|                 N/A|         0
-                 500|      T_Literal|    0|             integer|         0
-              downto|   T_Identifier|    1|                 N/A|         0
-                   3|      T_Literal|    0|             integer|         0
-                   )|        T_Other|    0|                 N/A|         0
-                   ;|        T_Other|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                  :=|        T_Other|    0|                 N/A|         0
-            o"12345"|      T_Literal|    0|    std_logic_vector|        15
-                   ;|        T_Other|    0|                 N/A|         0
-                 xor|     T_Operator|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                  rR|   T_Identifier|    0|                 N/A|         0
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                  --|        T_Other|    0|                 N/A|         0
-testes teste st est es tets est s |  T_CommentBody|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                 wow|   T_Identifier|    0|           trolltype|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                test|   T_Identifier|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                 wow|   T_Identifier|    0|           trolltype|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                  if|   T_Identifier|    1|                 N/A|         0
-                this|   T_Identifier|    0|                 N/A|         0
-                  is|   T_Identifier|    1|                 N/A|         0
-                   a|   T_Identifier|    0|                 N/A|         0
-           condition|   T_Identifier|    0|                 N/A|         0
-                then|   T_Identifier|    1|                 N/A|         0
-               elsif|   T_Identifier|    1|                 N/A|         0
-                this|   T_Identifier|    0|                 N/A|         0
-                  is|   T_Identifier|    1|                 N/A|         0
-                also|   T_Identifier|    0|                 N/A|         0
-                then|   T_Identifier|    1|                 N/A|         0
-            x"22222"|      T_Literal|    0|    std_logic_vector|        20
-    b"1000101010100"|      T_Literal|    0|    std_logic_vector|        13
-      o"17171717171"|      T_Literal|    0|    std_logic_vector|        33
-            X"28292"|      T_Literal|    0|    std_logic_vector|        20
-       B"1010100111"|      T_Literal|    0|    std_logic_vector|        10
-         O"17516151"|      T_Literal|    0|    std_logic_vector|        24
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                test|   T_Identifier|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-            lalalala|   T_Identifier|    0|                 N/A|         0
-     dkfjsldkfjslkdf|   T_Identifier|    0|                 N/A|         0
-                 sdf|   T_Identifier|    0|                 N/A|         0
-                 sdf|   T_Identifier|    0|                 N/A|         0
-         aklsdfjlkas|   T_Identifier|    0|                 N/A|         0
-              jdfkla|   T_Identifier|    0|                 N/A|         0
-                  if|   T_Identifier|    1|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                such|   T_Identifier|    0|                 N/A|         0
-               token|   T_Identifier|    0|                 N/A|         0
-                list|   T_Identifier|    0|                 N/A|         0
-                  of|   T_Identifier|    1|                 N/A|         0
-            x"29292"|      T_Literal|    0|    std_logic_vector|        20
-                 and|     T_Operator|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   -|     T_Operator|    0|                 N/A|         0
-                 xor|     T_Operator|    1|                 N/A|         0
-                then|   T_Identifier|    1|                 N/A|         0
-             weeeeee|   T_Identifier|    0|                 N/A|         0
-              having|   T_Identifier|    0|                 N/A|         0
-                some|   T_Identifier|    0|                 N/A|         0
-                 fun|   T_Identifier|    0|                 N/A|         0
-                with|   T_Identifier|    1|                 N/A|         0
-              tokens|   T_Identifier|    0|                 N/A|         0
-                when|   T_Identifier|    1|                 N/A|         0
-                   x|   T_Identifier|    0|                 N/A|         0
-                   =|     T_Operator|    0|                 N/A|         0
-                   3|      T_Literal|    0|             integer|         0
-                else|   T_Identifier|    1|                 N/A|         0
-                   1|      T_Literal|    0|             integer|         0
-                   ;|        T_Other|    0|                 N/A|         0
-                   <|     T_Operator|    0|                 N/A|         0
-                   >|     T_Operator|    0|                 N/A|         0
-Remove identifiers:
-               Token|           Type|  KW?| Token Type (if any)|Width (if any)
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                test|   T_Identifier|    0|                 N/A|         0
-                test|   T_Identifier|    0|                 N/A|         0
-                test|   T_Identifier|    0|                 N/A|         0
-                more|   T_Identifier|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-       asdklfjklasdf|   T_Identifier|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                 omg|   T_Identifier|    0|                 N/A|         0
-                true|      T_Literal|    0|             boolean|         0
-               false|      T_Literal|    0|             boolean|         0
-                true|      T_Literal|    0|             boolean|         0
-            variable|   T_Identifier|    1|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                   :|        T_Other|    0|                 N/A|         0
-           trolltype|   T_Identifier|    0|                 N/A|         0
-                   ;|        T_Other|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-              SIgnAL|   T_Identifier|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   :|        T_Other|    0|                 N/A|         0
-    std_logic_veCTor|   T_Identifier|    0|                 N/A|         0
-                   (|        T_Other|    0|                 N/A|         0
-                 500|      T_Literal|    0|             integer|         0
-              downto|   T_Identifier|    1|                 N/A|         0
-                   3|      T_Literal|    0|             integer|         0
-                   )|        T_Other|    0|                 N/A|         0
-                   ;|        T_Other|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                  :=|        T_Other|    0|                 N/A|         0
-            o"12345"|      T_Literal|    0|    std_logic_vector|        15
-                   ;|        T_Other|    0|                 N/A|         0
-                 xor|     T_Operator|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                  rR|   T_Identifier|    0|                 N/A|         0
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                   R|   T_Identifier|    0|    std_logic_vector|       498
-                  --|        T_Other|    0|                 N/A|         0
-testes teste st est es tets est s |  T_CommentBody|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                 wow|   T_Identifier|    0|           trolltype|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                test|   T_Identifier|    0|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                 wow|   T_Identifier|    0|           trolltype|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                  if|   T_Identifier|    1|                 N/A|         0
-                this|   T_Identifier|    0|                 N/A|         0
-                  is|   T_Identifier|    1|                 N/A|         0
-                   a|   T_Identifier|    0|                 N/A|         0
-           condition|   T_Identifier|    0|                 N/A|         0
-                then|   T_Identifier|    1|                 N/A|         0
-               elsif|   T_Identifier|    1|                 N/A|         0
-                this|   T_Identifier|    0|                 N/A|         0
-                  is|   T_Identifier|    1|                 N/A|         0
-                also|   T_Identifier|    0|                 N/A|         0
-                then|   T_Identifier|    1|                 N/A|         0
-            x"22222"|      T_Literal|    0|    std_logic_vector|        20
-    b"1000101010100"|      T_Literal|    0|    std_logic_vector|        13
-      o"17171717171"|      T_Literal|    0|    std_logic_vector|        33
-            X"28292"|      T_Literal|    0|    std_logic_vector|        20
-       B"1010100111"|      T_Literal|    0|    std_logic_vector|        10
-         O"17516151"|      T_Literal|    0|    std_logic_vector|        24
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                test|   T_Identifier|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-            lalalala|   T_Identifier|    0|                 N/A|         0
-     dkfjsldkfjslkdf|   T_Identifier|    0|                 N/A|         0
-                 sdf|   T_Identifier|    0|                 N/A|         0
-                 sdf|   T_Identifier|    0|                 N/A|         0
-         aklsdfjlkas|   T_Identifier|    0|                 N/A|         0
-              jdfkla|   T_Identifier|    0|                 N/A|         0
-                  if|   T_Identifier|    1|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                such|   T_Identifier|    0|                 N/A|         0
-               token|   T_Identifier|    0|                 N/A|         0
-                list|   T_Identifier|    0|                 N/A|         0
-                  of|   T_Identifier|    1|                 N/A|         0
-            x"29292"|      T_Literal|    0|    std_logic_vector|        20
-                 and|     T_Operator|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   -|     T_Operator|    0|                 N/A|         0
-                 xor|     T_Operator|    1|                 N/A|         0
-                then|   T_Identifier|    1|                 N/A|         0
-             weeeeee|   T_Identifier|    0|                 N/A|         0
-              having|   T_Identifier|    0|                 N/A|         0
-                some|   T_Identifier|    0|                 N/A|         0
-                 fun|   T_Identifier|    0|                 N/A|         0
-                with|   T_Identifier|    1|                 N/A|         0
-              tokens|   T_Identifier|    0|                 N/A|         0
-                when|   T_Identifier|    1|                 N/A|         0
-                   x|   T_Identifier|    0|                 N/A|         0
-                   =|     T_Operator|    0|                 N/A|         0
-                   3|      T_Literal|    0|             integer|         0
-                else|   T_Identifier|    1|                 N/A|         0
-                   1|      T_Literal|    0|             integer|         0
-                   ;|        T_Other|    0|                 N/A|         0
-                   <|     T_Operator|    0|                 N/A|         0
-                   >|     T_Operator|    0|                 N/A|         0
-Conditional Token List:
-               Token|           Type|  KW?| Token Type (if any)|Width (if any)
-                this|   T_Identifier|    0|                 N/A|         0
-                  is|   T_Identifier|    1|                 N/A|         0
-                   a|   T_Identifier|    0|                 N/A|         0
-           condition|   T_Identifier|    0|                 N/A|         0
-          (new line)|     T_Operator|    0|                 N/A|         0
-                this|   T_Identifier|    0|                 N/A|         0
-                  is|   T_Identifier|    1|                 N/A|         0
-                also|   T_Identifier|    0|                 N/A|         0
-          (new line)|     T_Operator|    0|                 N/A|         0
-                 wow|   T_Identifier|    0|           trolltype|         0
-                such|   T_Identifier|    0|                 N/A|         0
-               token|   T_Identifier|    0|                 N/A|         0
-                list|   T_Identifier|    0|                 N/A|         0
-                  of|   T_Identifier|    1|                 N/A|         0
-            x"29292"|      T_Literal|    0|    std_logic_vector|        20
-                 and|     T_Operator|    1|                 N/A|         0
-                   r|   T_Identifier|    0|    std_logic_vector|       498
-                   -|     T_Operator|    0|                 N/A|         0
-                 xor|     T_Operator|    1|                 N/A|         0
-          (new line)|     T_Operator|    0|                 N/A|         0
-                   x|   T_Identifier|    0|                 N/A|         0
-                   =|     T_Operator|    0|                 N/A|         0
-                   3|      T_Literal|    0|             integer|         0
-          (new line)|     T_Operator|    0|                 N/A|         0
+
+ if test then test 
+ if if if 
+ end if 
+ 
+ if w then if w then if w then 
+ end if 
+ 
+ signal test : std_logic ; 
+ '0' 
+ 
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|           std_logic|         1|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|           std_logic|         1|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         1
+                  if|   T_Identifier|    1|                 N/A|         0|         1
+                  if|   T_Identifier|    1|                 N/A|         0|         1
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+              signal|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|           std_logic|         1|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+           std_logic|   T_Identifier|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                 '0'|      T_Literal|    0|           std_logic|         1|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+
+
+
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|           std_logic|         1|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|           std_logic|         1|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         1
+                  if|   T_Identifier|    1|                 N/A|         0|         1
+                  if|   T_Identifier|    1|                 N/A|         0|         1
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+                then|   T_Identifier|    1|                 N/A|         0|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+                  if|   T_Identifier|    1|                 N/A|         0|         0
+              signal|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|           std_logic|         1|         0
+           std_logic|   T_Identifier|    0|                 N/A|         0|         0
+
+
+
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+
+
+
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+                 '0'|      T_Literal|    0|           std_logic|         1|         0
+
+
+
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+
+
+
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+                   :|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+
+
+
+               Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+                test|   T_Identifier|    0|           std_logic|         1|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                   w|   T_Identifier|    0|                 N/A|         0|         0
+          (new line)|     T_Operator|    0|                 N/A|         0|         0
+
+
+Errors in the token list:
+=========================
+Error near: if if if (Missing endif)
+Error near: if if if (Missing then and endif)
+Error near: if if if (Missing then and endif)
+Error near: end if (Missing then)
+Error near: if w then if w then if w then (Missing endif)
+Error near: if w then if w then if w then (Missing endif)
+
+
+Statistics on the token list:
+=============================
+# of tokens: 26
+# of lines: 10
+# of missing "then"s: 3
+# of missing "end if"s: 5
+# of unknown types/widths: 0
+# of type mismatches: 0
+# of width mismatches: 0
