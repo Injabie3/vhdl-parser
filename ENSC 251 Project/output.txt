@@ -129,7 +129,7 @@ Error near: if w then if w then if w then (Missing endif)
 Statistics on the token list:
 =============================
 # of tokens: 26
-# of lines: 10
+# of lines: 9
 # of missing "then"s: 3
 # of missing "end if"s: 5
 # of unknown types/widths: 0

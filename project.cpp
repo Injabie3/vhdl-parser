@@ -17,7 +17,10 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream);
 // Element 1: Count of unknown type and width.
 // Element 2: Count of type mismatch.
 // Element 3: Count of width mismatch.
-void checkConditionalMismatch(TokenList *conditionalList, bool verbose, ostream &outputStream, int(&errors)[3]);
+void checkConditionalMismatch(TokenList *originalList, TokenList *conditionalList, bool verbose, ostream &outputStream, int(&errors)[3]);
+
+//Function finds the first conditional statement belonging to the conditional statement specified via an integer in the original list, and returns a pointer to that token.  This function can only be called after findAllConditionalStatements() has been called.
+Token* findConditionalToken(TokenList *originalList, int conditionalStatement);
 
 //Example Test code for interacting with your Token, TokenList, and Tokenizer classes
 //Add your own code to further test the operation of your Token, TokenList, and Tokenizer classes
@@ -223,7 +226,7 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	//Find conditional statements
 	conditionalStatements = findAllConditionalExpressions(theList,true);
 
-	checkConditionalMismatch(conditionalStatements, verbose, outputStream, mismatchErrors);
+	checkConditionalMismatch(&theList,conditionalStatements, verbose, outputStream, mismatchErrors);
 	
 	if (verbose)
 		outputStream << "\n\n";
@@ -231,7 +234,7 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	outputStream << "Statistics on the token list:" << endl;
 	outputStream << "=============================" << endl;
 	outputStream << "# of tokens: " << numberTokens << endl;
-	outputStream << "# of lines: " << numberLines << endl;
+	outputStream << "# of lines: " << numberLines - 1 << endl;
 	outputStream << "# of missing \"then\"s: " << missingThen << endl;
 	outputStream << "# of missing \"end if\"s: " << missingEndIf << endl;
 	outputStream << "# of unknown types/widths: " << mismatchErrors[0] << endl;
@@ -245,7 +248,7 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 // Element 1: Count of unknown type and width.
 // Element 2: Count of type mismatch.
 // Element 3: Count of width mismatch.
-void checkConditionalMismatch(TokenList *conditionalList, bool verbose, ostream &outputStream, int (&errors)[3])
+void checkConditionalMismatch(TokenList *originalList, TokenList *conditionalList, bool verbose, ostream &outputStream, int (&errors)[3])
 {
 	errors[0] = 0;	//Reset count of unknown type/width (no tokenDetails struct)
 	errors[1] = 0;	//Reset count of type mismatch
@@ -266,23 +269,38 @@ void checkConditionalMismatch(TokenList *conditionalList, bool verbose, ostream 
 				if (before->getTokenDetails() == NULL || after->getTokenDetails() == NULL) //No details structure, so can't do comparison check.
 				{
 					errors[0]++;
-					if (verbose)
-						printErrorLine(current, "Unknown type and width", outputStream);
+					if (verbose) //Print out the entire line from the original list.
+						printErrorLine(findConditionalToken(originalList,current->getConditionalStatement()), "Unknown type and width", outputStream);
 				}
 				else if (before->getTokenDetails()->type != after->getTokenDetails()->type)	//Type mismatch
 				{
 					errors[1]++;
-					if (verbose)
-						printErrorLine(current, "Type mismatch", outputStream);
+					if (verbose) //Print out the entire line from the original list.
+						printErrorLine(findConditionalToken(originalList, current->getConditionalStatement()), "Type mismatch", outputStream);
 				}
 				else if (before->getTokenDetails()->width != after->getTokenDetails()->width) //Width mismatch
 				{
 					errors[2]++;
-					if (verbose)
-						printErrorLine(current, "Width mismatch", outputStream);
+					if (verbose) //Print out the entire line from the original list.
+						printErrorLine(findConditionalToken(originalList, current->getConditionalStatement()), "Width mismatch", outputStream);
 				}
 			}
 		}
 		current = current->getNext();
 	}
+}
+
+//Function finds the first conditional statement belonging to the conditional statement specified via an integer in the original list, and returns a pointer to that token.  This function can only be called after findAllConditionalStatements() has been called.
+Token* findConditionalToken(TokenList *originalList, int conditionalStatement)
+{
+	Token* current = originalList->getFirst();
+
+	while (current)
+	{
+		if (current->getConditionalStatement() == conditionalStatement)
+			return current;
+		current = current->getNext();
+	}
+
+	return 0; //Just for safety, but this should not be needed because precondition guarantees that this will not happen.
 }

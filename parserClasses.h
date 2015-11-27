@@ -50,7 +50,8 @@ private:
 	Token *next; //Next pointer for doubly linked list
 	Token *prev; //Previous pointer for doubly linked list
 	string stringRep; //Token value
-	bool conditionalError; //Custom field: Used to keep track of tokens with error, and is used when checking for conditional statement errors when finding properly formed conditional statements.
+	bool conditionalError; //Custom field: Used to keep track of tokens with error, and is used when checking for conditional statement errors when finding properly formed conditional statements.  By default, if the token has no error, this will be false.
+	int conditionalStatement; //Custom field: Used to keep track of which conditional statement the token belongs to, making it easier to print out the line when there is an error in type/width matching.  By default, if the token doesn't belong to a conditional statement, this field is set to zero.
 	 
 	bool _isKeyword; //true if token is a reserved keyword
 	tokenType type; //enum that holds the type of the token
@@ -133,7 +134,13 @@ public:
 	bool getConditionalError() { return conditionalError; };
 
 	//Custom mutator function: Use this function to set an error if the token is the beginning of a conditional expression, and does not form a proper conditional statement, which can be checked via the accessor function above.
-	void setConditionalError() { conditionalError = true; };
+	void setConditionalError() { this->conditionalError = true; };
+
+	//Custom accessor function: Returns the conditional statement in which the token belongs to as an int.  If the token does not belong to a conditional statement, this function returns a value of 0.
+	int getConditionalStatement() { return conditionalStatement; };
+
+	//Custom mutator function: Use this function to set the conditional statement in which the token belongs to when searching for conditional statements. Accepts an integer.
+	void setConditionalStatement(int value) { this->conditionalStatement = value; };
 };
 
 //A doubly-linked list class consisting of Token elements

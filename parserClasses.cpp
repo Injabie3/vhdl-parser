@@ -27,6 +27,8 @@ Token::Token()
 	prev = NULL;
 	stringRep = "";
 	details = NULL;
+	conditionalError = false;
+	conditionalStatement = 0;
 }
 
 //Constructor with string initialization
@@ -36,7 +38,9 @@ Token::Token(const string &stringRep)
 	next = NULL;
 	prev = NULL;
 	this->stringRep = stringRep;
-	details = NULL;	
+	details = NULL;
+	conditionalError = false;
+	conditionalStatement = 0;
 }
 
 //Copy constructor for Token class.
@@ -49,6 +53,7 @@ Token::Token(const Token &token)
 	type = token.getTokenType();
 	_isKeyword = token._isKeyword;
 	conditionalError = token.conditionalError;
+	conditionalStatement = token.conditionalStatement;
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
@@ -68,6 +73,7 @@ void Token::operator =(const Token& token)
 	type = token.getTokenType();
 	_isKeyword = token._isKeyword;
 	conditionalError = token.conditionalError;
+	conditionalStatement = token.conditionalStatement;
 	if (token.getTokenDetails() != NULL)
 	{
 		details = new tokenDetails;
@@ -583,15 +589,18 @@ int removeTokensOfType(TokenList &tokenList, tokenType type)
 //At the end of a conditional expression a newline character is appened
 //Example: if (a = true) then
 //Your list should include "(", "a", "=", "true", ")" and "\n" 
-//tokenList is NOT modified
+//tokenList is NOT modified (e.g. head and tail).
+//Individual tokens may be modified to specify which conditional expression they are part of,
+//which makes tracking errors later on easier.
 TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraBeginningLine)
 {
 	TokenList *newList = new TokenList;	//The tokenlist that will be returned at the end.
-	Token *temp = NULL;		//Temporary pointer to a token.
-	Token *move = NULL;
+	Token *temp = NULL;		//Temporary pointer to a token, used to check for the if in "end if"
+	Token *move = NULL;		//Temporary pointer to a token, used to traverse the token list.
 	Token *copiedToken = NULL; //New copy of the token, using copy constructor/overloaded assignment operator
 	bool conditionalStatement = false;	//bool to keep track of if else, elseif, and then was found before.
 	string lowerStringRep = ""; //The lowered string.
+	int numberConditionalStatements = 1; //The number of conditional statements. Used to set which conditional statements a token is part of.
 	move = tokenList.getFirst(); 
 
 	if (extraBeginningLine) //Append \n at the beginning if requested. Helps for printing out error lines if any.
@@ -612,6 +621,7 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraB
 			{
 				conditionalStatement = false;
 				newList->append("\n");
+				numberConditionalStatements++;
 			}
 		}
 		else if (lowerStringRep == "end") //Detect end if to avoid conflict with the above if.
@@ -625,8 +635,8 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraB
 		}
 		else if (conditionalStatement)
 		{
-			copiedToken = new Token;
-			*copiedToken = *move; //Make a copy of the contents of the token via overloaded assignment operator.
+			move->setConditionalStatement(numberConditionalStatements); //Set conditional statement tracking number on current token.
+			copiedToken = new Token(*move); //Make a copy of the contents of the token via copy constructor.
 			newList->append(copiedToken); //Append the copy of the token to the new list.
 		}
 
@@ -636,8 +646,9 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraB
 	return newList;
 }
 
-string stringLower(Token *token)
 //Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
+string stringLower(Token *token)
+
 {
 	string stringRepLower = "";		//The string in the token in all lowercase.
 	char *buffer = NULL;			//The string held in a character array.
@@ -657,16 +668,16 @@ string stringLower(Token *token)
 	return stringRepLower;
 }
 
-void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostream &outputStream, int &missingThen, int &missingEndIf)
 //Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
 //Does not modify the original list, and can output in verbose mode.
+void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostream &outputStream, int &missingThen, int &missingEndIf)
 {
-	Token *current = currentList->getFirst();
-	Token *move = NULL;
+	Token *current = currentList->getFirst();	//The current token, used to traverse the list in order to find errors.
+	Token *move = NULL;	//Temporary token pointer, used to traverse the list when an error is found
 	string stringLowered = ""; //Current token's stringRep in lowercase
 	string backTrack = ""; //The stringRep for move, used when traversing backwards to find previous if or elsif
-	bool CSflag = false;
-	bool foundThen = false;
+	bool CSflag = false;	//A flag that is set to true when we are in a conditional statement.
+	bool foundThen = false;	//A flag that is set to true when the corresponding if or elsif has a then.
 
 	missingThen = 0;
 	missingEndIf = 0;
@@ -838,9 +849,9 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostre
 	}
 }
 
-void printErrorLine(Token *token, string errorType, ostream& outputStream)
 //Function takes the token causing the error, and prints the entire line where the error occurs, along with the type of error.
 //Must guarantee that the list has starting \n and ending \n to avoid out of bound references!
+void printErrorLine(Token *token, string errorType, ostream& outputStream)
 {
 	Token *lineEnd = token;
 	Token *lineStart = NULL;
