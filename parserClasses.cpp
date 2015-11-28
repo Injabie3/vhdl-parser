@@ -163,6 +163,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	string nextStringRepLower = ""; //The next token's (or next-next token's) string in all lowercase, if it exists.
 	Token *type = NULL;				//Pointer to the token holding the type, if it exists. Used when checking if it is an identifier or not.
 	Token *here = NULL;				//Pointer to a token, used to loop through and check previous tokens to see if there is another identifier with the same name.
+	Token *afterColon = NULL;		//Pointer to the token after :. Used as a placeholder when finding the type and width of an identifier in a signal/variable declaration.
 	
 
 	//Stage -1: Ignore \n and \r and do not set details.
@@ -261,16 +262,21 @@ void TokenList::findAndSetTokenDetails(Token *token)
 			prevStringRepLower = stringLower(token->getPrev());
 			//Check previous token for "signal" or "variable"
 			//If true, then check the token after the next(aka the one after : )
-			if (prevStringRepLower == "signal" || prevStringRepLower == "variable")
+			if (prevStringRepLower == "signal" || prevStringRepLower == "variable" || sigVarDeclaration)
 			{
+				sigVarDeclaration = true; //If this isn't set to true already, set it again.
 				//Assuming valid VHDL at this point, so next token and token after that exists.
-				//Take the token after the next (aka the one after :) as type
-				nextStringRepLower = stringLower(token->getNext()->getNext());
+				//Take the token after the : token as the type.
+				afterColon = token;
+				while (afterColon->getStringRep() != ":")
+					afterColon = afterColon->getNext();
+				afterColon = afterColon->getNext();
+				nextStringRepLower = stringLower(afterColon);
 				//If the type is "std_logic_vector", check the next few tokens to determine width
 				if (nextStringRepLower == "std_logic_vector")
 				{
 					//std_logic_vector ( # downto/to # )
-					type = token->getNext()->getNext();
+					type = afterColon;
 					bound1 = stoi(type->getNext()->getNext()->getStringRep());
 					bound2 = stoi(type->getNext()->getNext()->getNext()->getNext()->getStringRep());
 					token->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
@@ -287,7 +293,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 					token->setTokenDetails(nextStringRepLower, 0);
 				}
 
-				//Check previous tokens to see if there is an identifier with the same name.
+				//Check previous tokens to see if there is an identifier with the same name, and set their details.
 				here = head; //Set here to the head of the list.
 				while (here != token)
 				{
@@ -306,6 +312,7 @@ void TokenList::findAndSetTokenDetails(Token *token)
 				return;
 			}
 		}
+
 
 		//If we haven't returned at this point in this if statement:
 		//Check all previous nodes for same identifier name, and copy its contents if we find it.
@@ -326,6 +333,11 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	
 	//#5 - Everything else: We can't find anything matching by this point, so set type to other.
 	token->type = T_Other;
+
+	//To accommodate #3's method of searching for multi-identifier declarations, if we encounter :, set sigVarDeclaration back to false before returning!
+	if (token->getStringRep() == ":")
+		sigVarDeclaration = false;
+
 	return;
 
 }

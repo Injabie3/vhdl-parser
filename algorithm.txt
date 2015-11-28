@@ -28,8 +28,8 @@ findAndSetTokenDetails
 			- Check if first character is a letter.
 			- check to see that there are no illegal ID characters (eg. delimiters)
 			- If above is all okay, categorize as identifier.
-			- Check previous token for "signal" or "variable"
-				- If true, then check the token after the next (aka the one after :)
+			- Check previous token for "signal" or "variable" or if sigVarDeclaration is true.
+				- If true, then find the token after the : token, and set sigVarDeclaration to true.
 				- Take that token as the type.
 				- Check the token after the type.
 					<type> ( # downto/to # )
@@ -39,18 +39,9 @@ findAndSetTokenDetails
 					- take the difference of the absolute value of the two, and add 1 to it.
 					- This is the width of the token. Store accordingly
 				- Check previous tokens to see if there is identifier with same name, and set it's tokenDetails if so.
-			# If the previous token was a ",", check previous tokens (provided they are not NULL) until you hit a \n to see if you can find "signal" or "variable".
-				# If true, then find the token after : that appears after the current token
-				# Take that token as the type.
-				# Check the token after the type.
-					<type> ( # downto/to # )
-					# If that token is (, take next token # and convert to int, and store as "starting value"
-					# skip downto/to token, and take next token # and convert to int, and store as "end value"
-					# http://stackoverflow.com/questions/194465/how-to-parse-a-string-to-an-int-in-c for into on string to int conversion
-					# take the difference of the absolute value of the two, and add 1 to it.
-					# This is the width of the token. Store accordingly
 			- If above is not satisfied, check all previous tokens to see if there is another identifier with same name, and copy its contents if needed.
 		- others
+			- If token is : and sigVarDeclaration is true, set sigVarDeclaration to false.
 			- last case, take care of everything else.
 			
 findAllConditionalExpressions

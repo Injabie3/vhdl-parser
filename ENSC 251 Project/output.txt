@@ -1,78 +1,53 @@
 
- if test then test 
- if if if 
- end if 
- 
- if w then if w then if w then 
- end if 
- 
- signal test : std_logic ; 
- '0' 
+ -- This file just tests multiple signal declarations on one line 
+ signal test , test2 , test3 : std_logic ; 
+ variable inc1 , inc2 , inc3 : std_logic_vector ( 100 downto 3 ) ; 
  
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
           (new line)|     T_Operator|    0|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                test|   T_Identifier|    0|           std_logic|         1|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                test|   T_Identifier|    0|           std_logic|         1|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         1
-                  if|   T_Identifier|    1|                 N/A|         0|         1
-                  if|   T_Identifier|    1|                 N/A|         0|         1
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                 end|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                 end|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                  --|        T_Other|    0|                 N/A|         0|         0
+This file just tests multiple signal declarations on one line|  T_CommentBody|    0|                 N/A|         0|         0
           (new line)|     T_Operator|    0|                 N/A|         0|         0
               signal|   T_Identifier|    1|                 N/A|         0|         0
                 test|   T_Identifier|    0|           std_logic|         1|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+               test2|   T_Identifier|    0|           std_logic|         1|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+               test3|   T_Identifier|    0|           std_logic|         1|         0
                    :|        T_Other|    0|                 N/A|         0|         0
            std_logic|   T_Identifier|    0|                 N/A|         0|         0
                    ;|        T_Other|    0|                 N/A|         0|         0
           (new line)|     T_Operator|    0|                 N/A|         0|         0
-                 '0'|      T_Literal|    0|           std_logic|         1|         0
+            variable|   T_Identifier|    1|                 N/A|         0|         0
+                inc1|   T_Identifier|    0|    std_logic_vector|        98|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+                inc2|   T_Identifier|    0|    std_logic_vector|        98|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+                inc3|   T_Identifier|    0|    std_logic_vector|        98|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+    std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
+                   (|        T_Other|    0|                 N/A|         0|         0
+                 100|      T_Literal|    0|             integer|         0|         0
+              downto|   T_Identifier|    1|                 N/A|         0|         0
+                   3|      T_Literal|    0|             integer|         0|         0
+                   )|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
           (new line)|     T_Operator|    0|                 N/A|         0|         0
 
 
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                test|   T_Identifier|    0|           std_logic|         1|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                test|   T_Identifier|    0|           std_logic|         1|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         1
-                  if|   T_Identifier|    1|                 N/A|         0|         1
-                  if|   T_Identifier|    1|                 N/A|         0|         1
-                 end|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-                then|   T_Identifier|    1|                 N/A|         0|         0
-                 end|   T_Identifier|    1|                 N/A|         0|         0
-                  if|   T_Identifier|    1|                 N/A|         0|         0
               signal|   T_Identifier|    1|                 N/A|         0|         0
                 test|   T_Identifier|    0|           std_logic|         1|         0
+               test2|   T_Identifier|    0|           std_logic|         1|         0
+               test3|   T_Identifier|    0|           std_logic|         1|         0
            std_logic|   T_Identifier|    0|                 N/A|         0|         0
+            variable|   T_Identifier|    1|                 N/A|         0|         0
+                inc1|   T_Identifier|    0|    std_logic_vector|        98|         0
+                inc2|   T_Identifier|    0|    std_logic_vector|        98|         0
+                inc3|   T_Identifier|    0|    std_logic_vector|        98|         0
+    std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
+              downto|   T_Identifier|    1|                 N/A|         0|         0
 
 
 
@@ -81,57 +56,48 @@
           (new line)|     T_Operator|    0|                 N/A|         0|         0
           (new line)|     T_Operator|    0|                 N/A|         0|         0
           (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
 
 
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-                 '0'|      T_Literal|    0|           std_logic|         1|         0
+                 100|      T_Literal|    0|             integer|         0|         0
+                   3|      T_Literal|    0|             integer|         0|         0
 
 
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+This file just tests multiple signal declarations on one line|  T_CommentBody|    0|                 N/A|         0|         0
 
 
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+                  --|        T_Other|    0|                 N/A|         0|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
                    :|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+                   ,|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                   (|        T_Other|    0|                 N/A|         0|         0
+                   )|        T_Other|    0|                 N/A|         0|         0
                    ;|        T_Other|    0|                 N/A|         0|         0
 
 
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-                test|   T_Identifier|    0|           std_logic|         1|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                   w|   T_Identifier|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
 
 
 Errors in the token list:
 =========================
-Error near: if if if (Missing endif)
-Error near: if if if (Missing then and endif)
-Error near: if if if (Missing then and endif)
-Error near: end if (Missing then)
-Error near: if w then if w then if w then (Missing endif)
-Error near: if w then if w then if w then (Missing endif)
 
 
 Statistics on the token list:
 =============================
-# of tokens: 26
-# of lines: 9
-# of missing "then"s: 3
-# of missing "end if"s: 5
+# of tokens: 25
+# of lines: 3
+# of missing "then"s: 0
+# of missing "end if"s: 0
 # of unknown types/widths: 0
 # of type mismatches: 0
 # of width mismatches: 0
