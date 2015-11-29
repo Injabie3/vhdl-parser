@@ -1,89 +1,265 @@
+Before setting token details, the list looks like:
+--------------------------------------------------
 
- -- This file just tests multiple signal declarations on one line 
- signal test , test2 , test3 : std_logic ; 
- variable inc1 , inc2 , inc3 : std_logic_vector ( 100 downto 3 ) ; 
+ library ieee ; 
+ use ieee . std_logic_1164 . all ; 
  
+ entity test is 
+ port ( test : in std_logic ; 
+ wow : out std_logic_vector ( 8 downto 0 ) ) ; 
+ end entity test ; 
+ 
+ architecture wow of test is : 
+ constant REPLACE_ME : std_logic_vector := "101010101" ; 
+ constant REPLACE_ME2 : integer := 100 ; 
+ constant REPLACE_ME3 : std_logic := '1' ; 
+ signal mySignal : integer ; 
+ signal mySignal2 : std_logic ; 
+ begin 
+ wow < = REPLACE_ME ; 
+ mySignal < = REPLACE_ME2 ; 
+ mySignal2 < = REPLACE_ME3 ; 
+ end architecture test ; 
+ 
+After setting token details, the list looks like:
+-------------------------------------------------
+
+ library ieee ; 
+ use ieee . std_logic_1164 . all ; 
+ 
+ entity test is 
+ port ( test : in std_logic ; 
+ wow : out std_logic_vector ( 8 downto 0 ) ) ; 
+ end entity test ; 
+ 
+ architecture wow of test is : 
+ constant REPLACE_ME : std_logic_vector := "101010101" ; 
+ constant REPLACE_ME2 : integer := 100 ; 
+ constant REPLACE_ME3 : std_logic := '1' ; 
+ signal mySignal : integer ; 
+ signal mySignal2 : std_logic ; 
+ begin 
+ wow < = "101010101" ; 
+ mySignal < = 100 ; 
+ mySignal2 < = '1' ; 
+ end architecture test ; 
+ 
+
+The entire list:
+
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-                  --|        T_Other|    0|                 N/A|         0|         0
-This file just tests multiple signal declarations on one line|  T_CommentBody|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
+             library|   T_Identifier|    1|                 N/A|         0|         0
+                ieee|   T_Identifier|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                 use|   T_Identifier|    1|                 N/A|         0|         0
+                ieee|   T_Identifier|    0|                 N/A|         0|         0
+                   .|        T_Other|    0|                 N/A|         0|         0
+      std_logic_1164|   T_Identifier|    0|                 N/A|         0|         0
+                   .|        T_Other|    0|                 N/A|         0|         0
+                 all|   T_Identifier|    1|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+              entity|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                  is|   T_Identifier|    1|                 N/A|         0|         0
+                port|   T_Identifier|    1|                 N/A|         0|         0
+                   (|        T_Other|    0|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                  in|   T_Identifier|    1|                 N/A|         0|         0
+           std_logic|   T_Identifier|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                 wow|   T_Identifier|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                 out|   T_Identifier|    1|                 N/A|         0|         0
+    std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
+                   (|        T_Other|    0|                 N/A|         0|         0
+                   8|      T_Literal|    0|             integer|         0|         0
+              downto|   T_Identifier|    1|                 N/A|         0|         0
+                   0|      T_Literal|    0|             integer|         0|         0
+                   )|        T_Other|    0|                 N/A|         0|         0
+                   )|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+              entity|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+        architecture|   T_Identifier|    1|                 N/A|         0|         0
+                 wow|   T_Identifier|    0|                 N/A|         0|         0
+                  of|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                  is|   T_Identifier|    1|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+            constant|   T_Identifier|    1|                 N/A|         0|         0
+          REPLACE_ME|   T_Identifier|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+    std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
+                  :=|        T_Other|    0|                 N/A|         0|         0
+         "101010101"|      T_Literal|    0|    std_logic_vector|         9|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+            constant|   T_Identifier|    1|                 N/A|         0|         0
+         REPLACE_ME2|   T_Identifier|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+             integer|   T_Identifier|    0|                 N/A|         0|         0
+                  :=|        T_Other|    0|                 N/A|         0|         0
+                 100|      T_Literal|    0|             integer|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+            constant|   T_Identifier|    1|                 N/A|         0|         0
+         REPLACE_ME3|   T_Identifier|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+           std_logic|   T_Identifier|    0|                 N/A|         0|         0
+                  :=|        T_Other|    0|                 N/A|         0|         0
+                 '1'|      T_Literal|    0|           std_logic|         1|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
               signal|   T_Identifier|    1|                 N/A|         0|         0
-                test|   T_Identifier|    0|           std_logic|         1|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
-               test2|   T_Identifier|    0|           std_logic|         1|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
-               test3|   T_Identifier|    0|           std_logic|         1|         0
+            mySignal|   T_Identifier|    0|             integer|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+             integer|   T_Identifier|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+              signal|   T_Identifier|    1|                 N/A|         0|         0
+           mySignal2|   T_Identifier|    0|           std_logic|         1|         0
                    :|        T_Other|    0|                 N/A|         0|         0
            std_logic|   T_Identifier|    0|                 N/A|         0|         0
                    ;|        T_Other|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-            variable|   T_Identifier|    1|                 N/A|         0|         0
-                inc1|   T_Identifier|    0|    std_logic_vector|        98|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
-                inc2|   T_Identifier|    0|    std_logic_vector|        98|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
-                inc3|   T_Identifier|    0|    std_logic_vector|        98|         0
-                   :|        T_Other|    0|                 N/A|         0|         0
-    std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
-                   (|        T_Other|    0|                 N/A|         0|         0
-                 100|      T_Literal|    0|             integer|         0|         0
-              downto|   T_Identifier|    1|                 N/A|         0|         0
-                   3|      T_Literal|    0|             integer|         0|         0
-                   )|        T_Other|    0|                 N/A|         0|         0
+               begin|   T_Identifier|    1|                 N/A|         0|         0
+                 wow|   T_Identifier|    0|                 N/A|         0|         0
+                   <|     T_Operator|    0|                 N/A|         0|         0
+                   =|     T_Operator|    0|                 N/A|         0|         0
+         "101010101"|      T_Literal|    0|    std_logic_vector|         9|         0
                    ;|        T_Other|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
+            mySignal|   T_Identifier|    0|             integer|         0|         0
+                   <|     T_Operator|    0|                 N/A|         0|         0
+                   =|     T_Operator|    0|                 N/A|         0|         0
+                 100|      T_Literal|    0|             integer|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+           mySignal2|   T_Identifier|    0|           std_logic|         1|         0
+                   <|     T_Operator|    0|                 N/A|         0|         0
+                   =|     T_Operator|    0|                 N/A|         0|         0
+                 '1'|      T_Literal|    0|           std_logic|         1|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+        architecture|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
 
 
+Identifier tokens:
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-              signal|   T_Identifier|    1|                 N/A|         0|         0
-                test|   T_Identifier|    0|           std_logic|         1|         0
-               test2|   T_Identifier|    0|           std_logic|         1|         0
-               test3|   T_Identifier|    0|           std_logic|         1|         0
+             library|   T_Identifier|    1|                 N/A|         0|         0
+                ieee|   T_Identifier|    0|                 N/A|         0|         0
+                 use|   T_Identifier|    1|                 N/A|         0|         0
+                ieee|   T_Identifier|    0|                 N/A|         0|         0
+      std_logic_1164|   T_Identifier|    0|                 N/A|         0|         0
+                 all|   T_Identifier|    1|                 N/A|         0|         0
+              entity|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                  is|   T_Identifier|    1|                 N/A|         0|         0
+                port|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                  in|   T_Identifier|    1|                 N/A|         0|         0
            std_logic|   T_Identifier|    0|                 N/A|         0|         0
-            variable|   T_Identifier|    1|                 N/A|         0|         0
-                inc1|   T_Identifier|    0|    std_logic_vector|        98|         0
-                inc2|   T_Identifier|    0|    std_logic_vector|        98|         0
-                inc3|   T_Identifier|    0|    std_logic_vector|        98|         0
+                 wow|   T_Identifier|    0|                 N/A|         0|         0
+                 out|   T_Identifier|    1|                 N/A|         0|         0
     std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
               downto|   T_Identifier|    1|                 N/A|         0|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+              entity|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+        architecture|   T_Identifier|    1|                 N/A|         0|         0
+                 wow|   T_Identifier|    0|                 N/A|         0|         0
+                  of|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
+                  is|   T_Identifier|    1|                 N/A|         0|         0
+            constant|   T_Identifier|    1|                 N/A|         0|         0
+          REPLACE_ME|   T_Identifier|    0|                 N/A|         0|         0
+    std_logic_vector|   T_Identifier|    0|                 N/A|         0|         0
+            constant|   T_Identifier|    1|                 N/A|         0|         0
+         REPLACE_ME2|   T_Identifier|    0|                 N/A|         0|         0
+             integer|   T_Identifier|    0|                 N/A|         0|         0
+            constant|   T_Identifier|    1|                 N/A|         0|         0
+         REPLACE_ME3|   T_Identifier|    0|                 N/A|         0|         0
+           std_logic|   T_Identifier|    0|                 N/A|         0|         0
+              signal|   T_Identifier|    1|                 N/A|         0|         0
+            mySignal|   T_Identifier|    0|             integer|         0|         0
+             integer|   T_Identifier|    0|                 N/A|         0|         0
+              signal|   T_Identifier|    1|                 N/A|         0|         0
+           mySignal2|   T_Identifier|    0|           std_logic|         1|         0
+           std_logic|   T_Identifier|    0|                 N/A|         0|         0
+               begin|   T_Identifier|    1|                 N/A|         0|         0
+                 wow|   T_Identifier|    0|                 N/A|         0|         0
+            mySignal|   T_Identifier|    0|             integer|         0|         0
+           mySignal2|   T_Identifier|    0|           std_logic|         1|         0
+                 end|   T_Identifier|    1|                 N/A|         0|         0
+        architecture|   T_Identifier|    1|                 N/A|         0|         0
+                test|   T_Identifier|    0|                 N/A|         0|         0
 
 
+Operator tokens:
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
-          (new line)|     T_Operator|    0|                 N/A|         0|         0
+                   <|     T_Operator|    0|                 N/A|         0|         0
+                   =|     T_Operator|    0|                 N/A|         0|         0
+                   <|     T_Operator|    0|                 N/A|         0|         0
+                   =|     T_Operator|    0|                 N/A|         0|         0
+                   <|     T_Operator|    0|                 N/A|         0|         0
+                   =|     T_Operator|    0|                 N/A|         0|         0
 
 
+Literal tokens:
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
+                   8|      T_Literal|    0|             integer|         0|         0
+                   0|      T_Literal|    0|             integer|         0|         0
+         "101010101"|      T_Literal|    0|    std_logic_vector|         9|         0
                  100|      T_Literal|    0|             integer|         0|         0
-                   3|      T_Literal|    0|             integer|         0|         0
+                 '1'|      T_Literal|    0|           std_logic|         1|         0
+         "101010101"|      T_Literal|    0|    std_logic_vector|         9|         0
+                 100|      T_Literal|    0|             integer|         0|         0
+                 '1'|      T_Literal|    0|           std_logic|         1|         0
 
 
+Comment body tokens:
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-This file just tests multiple signal declarations on one line|  T_CommentBody|    0|                 N/A|         0|         0
 
 
+Other tokens:
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
-                  --|        T_Other|    0|                 N/A|         0|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   .|        T_Other|    0|                 N/A|         0|         0
+                   .|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   (|        T_Other|    0|                 N/A|         0|         0
                    :|        T_Other|    0|                 N/A|         0|         0
                    ;|        T_Other|    0|                 N/A|         0|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
-                   ,|        T_Other|    0|                 N/A|         0|         0
                    :|        T_Other|    0|                 N/A|         0|         0
                    (|        T_Other|    0|                 N/A|         0|         0
                    )|        T_Other|    0|                 N/A|         0|         0
+                   )|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                  :=|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                  :=|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                  :=|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   :|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
+                   ;|        T_Other|    0|                 N/A|         0|         0
                    ;|        T_Other|    0|                 N/A|         0|         0
 
 
+Conditional statement tokens:
 
                Token|           Type|  KW?| Token Type (if any)|Width (if any)|CS Error?
 
@@ -94,8 +270,8 @@ Errors in the token list:
 
 Statistics on the token list:
 =============================
-# of tokens: 25
-# of lines: 3
+# of tokens: 92
+# of lines: 19
 # of missing "then"s: 0
 # of missing "end if"s: 0
 # of unknown types/widths: 0

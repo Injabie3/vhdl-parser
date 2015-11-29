@@ -304,12 +304,53 @@ void TokenList::findAndSetTokenDetails(Token *token)
 							here->setTokenDetails(nextStringRepLower, 1);
 						else if (bound1 == -1 || bound2 == -1) //Not a vector or std_logic
 							here->setTokenDetails(nextStringRepLower, 0);
-						else //Vector - std_logic
+						else //Vector - std_logic_vector
 							here->setTokenDetails(nextStringRepLower, abs(bound1 - bound2) + 1);
 					}
 					here = here->getNext();
 				}
 				return;
+			}
+
+			if (prevStringRepLower == "constant" || constDeclaration)
+			//Check previous token for "constant" or if the constDeclaration flag is set.
+			//If true, then check the token after the next(aka the one after : )
+			//Note that this does not support deferred constants!
+			//Only supports integers, bit_vector, std_logic_vector, and std_logic
+			{
+				constDeclaration = true;
+				//Assuming valid VHDL at this point, so next token and token after that exists.
+				//Take the token after the : token as the type.
+				afterColon = token;
+				while (afterColon->getStringRep() != ":")
+					afterColon = afterColon->getNext();
+				afterColon = afterColon->getNext();
+				nextStringRepLower = stringLower(afterColon);
+
+				//: <type> := <value>
+				//Call itself again to set the width of <value>
+				findAndSetTokenDetails(afterColon->getNext()->getNext());
+
+				//Check all tokens in the list to see if there is an identifier with the same name.
+				//If it is the same, replace its stringRep, and set its details.
+				here = head; //Set here to the head of the list.
+				while (here != NULL)
+				{
+					prevStringRepLower = stringLower(here);	//Make the current token's stringRep lowercase.
+					if (prevStringRepLower == stringRepLower)
+					{
+						//Replace stringRep with the one in <value>
+						here->setStringRep(afterColon->getNext()->getNext()->getStringRep()); 
+						//Set token details to the type found above, and width found when calling findAndSetTokenDetails on the <value> token.
+						here->setTokenDetails(nextStringRepLower, afterColon->getNext()->getNext()->getTokenDetails()->width);
+					}
+
+					if (here != NULL && here->getNext() == token) //Skip over the token in this function.
+						here = here->getNext();
+					here = here->getNext();
+				}
+				return;
+
 			}
 		}
 
@@ -334,9 +375,12 @@ void TokenList::findAndSetTokenDetails(Token *token)
 	//#5 - Everything else: We can't find anything matching by this point, so set type to other.
 	token->type = T_Other;
 
-	//To accommodate #3's method of searching for multi-identifier declarations, if we encounter :, set sigVarDeclaration back to false before returning!
+	//To accommodate #3's method of searching for multi-identifier declarations, if we encounter :, set sigVarDeclaration and constDeclaration back to false before returning!
 	if (token->getStringRep() == ":")
+	{
 		sigVarDeclaration = false;
+		constDeclaration = false;
+	}
 
 	return;
 

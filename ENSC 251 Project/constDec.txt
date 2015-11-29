@@ -1,0 +1,19 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity test is
+	port (	test: in std_logic;
+			wow: out std_logic_vector(8 downto 0));
+end entity test;
+
+architecture wow of test is:
+	constant REPLACE_ME: std_logic_vector := "101010101";
+	constant REPLACE_ME2: integer := 100;
+	constant REPLACE_ME3: std_logic := '1';
+	signal mySignal: integer;
+	signal mySignal2: std_logic;
+begin
+	wow <= REPLACE_ME;
+	mySignal <= REPLACE_ME2;
+	mySignal2 <= REPLACE_ME3;
+end architecture test;

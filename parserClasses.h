@@ -149,10 +149,11 @@ private:
 	Token *head; //Points to the head of the token list (doubly linked)
 	Token *tail; //Points to the tail of the function list (doubly linked)
 	bool sigVarDeclaration; //Custom member field. Used in conjunction with the findAndSetTokenDetails function (in a loop), where this member field signifies if the current token should be considered part of a signal or variable declaration, and treat as such.
+	bool constDeclaration; //Custom member field. Used in conjunction with the findAndSetTokenDetails function (in a loop), where this member field signifies if the current token should be considered part of a constant declaration, and treat as such.
 	
 public:
 	//Default Constructor, Empty list with pointers initialized to NULL
-	TokenList() : head(NULL), tail(NULL), sigVarDeclaration(false) { }
+	TokenList() : head(NULL), tail(NULL), sigVarDeclaration(false), constDeclaration(false) { }
 	
 	//Returns a pointer to the head of the list
 	Token* getFirst() const { return head; }

@@ -73,6 +73,12 @@ int main() {
 
 	/*Test your tokenization of the file by traversing the tokens list and printing out the tokens*/
 	Token *t = tokens.getFirst();
+
+	cout <<		"Before setting token details, the list looks like:\n"
+		<<		"--------------------------------------------------\n";
+	outFile <<	"Before setting token details, the list looks like:\n"
+		<<		"--------------------------------------------------\n";
+
 	while(t) {
 		cout << t->getStringRep() << " ";
 		outFile << t->getStringRep() << " ";
@@ -85,6 +91,19 @@ int main() {
 		tokens.findAndSetTokenDetails(t);
 		t = t->getNext();
 	}
+
+	t = tokens.getFirst();
+	cout <<		"\nAfter setting token details, the list looks like:\n"
+		<<		"-------------------------------------------------\n";
+	outFile <<	"\nAfter setting token details, the list looks like:\n"
+		<<		"-------------------------------------------------\n";
+
+	while (t) {
+		cout << t->getStringRep() << " ";
+		outFile << t->getStringRep() << " ";
+		t = t->getNext();
+	}
+
 
 	Token *copy;
   /* For your testing purposes only */
@@ -108,26 +127,43 @@ int main() {
 		t = t->getNext();
 	}
 
+	cout << endl << endl;
+	outFile << endl << endl;
+
 	//Print out the sorted lists to both the terminal and output file.
+	cout << "The entire list:\n";
 	printList(&tokens, cout);
+	cout << "Identifier tokens:\n";
 	printList(&identifierTokens, cout);
+	cout << "Operator tokens:\n";
 	printList(&operatorTokens, cout);
+	cout << "Literal tokens:\n";
 	printList(&literalTokens, cout);
+	cout << "Comment body tokens:\n";
 	printList(&commentBodyTokens, cout);
+	cout << "Other tokens:\n";
 	printList(&otherTokens, cout);
 
+	outFile << "The entire list:\n";
 	printList(&tokens, outFile);
+	outFile << "Identifier tokens:\n";
 	printList(&identifierTokens, outFile);
+	outFile << "Operator tokens:\n";
 	printList(&operatorTokens, outFile);
+	outFile << "Literal tokens:\n";
 	printList(&literalTokens, outFile);
+	outFile << "Comment body tokens:\n";
 	printList(&commentBodyTokens, outFile);
+	outFile << "Other tokens:\n";
 	printList(&otherTokens, outFile);
 	
 	//Find conditional statements.
 	conditionalStatements = findAllConditionalExpressions(tokens);
 
 	//Print out conditional statements to both terminal and output file.
+	cout << "Conditional statement tokens:\n";
 	printList(conditionalStatements, cout);
+	outFile << "Conditional statement tokens:\n";
 	printList(conditionalStatements, outFile);
 
 	//Run statistics, and print to both terminal and output file.
@@ -177,8 +213,11 @@ void printList(TokenList *theList, ostream &outputStream)
 			width = t->getTokenDetails()->width;
 		}
 
-		if (t->getStringRep() == "\n") //Indicate new line token.
-			stringRep = "(new line)";
+		if (t->getStringRep() == "\n") //Skip new lines.
+		{
+			t = t->getNext();
+			continue;
+		}
 		else
 			stringRep = t->getStringRep();	//Store the string into the temp string.
 
