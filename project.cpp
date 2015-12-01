@@ -1,4 +1,13 @@
-//Use only the following three libraries:
+// ENSC 251 Project
+// Title:			project.cpp
+// Related Files:	parserClasses.h, parserClasses.cpp
+// Author(s):		Lesley Shannon, Ryan Lui, Lior Bragilevsky
+// Student Number:	301251951, 301248920
+// Last Modified:	2015-11-30
+// Version:			2.0
+// Revision Hist.:	1.0 - File creation.
+//					2.0 - Final product for project.
+
 #include "parserClasses.h"
 #include <iostream>
 #include <fstream>
@@ -166,9 +175,20 @@ int main() {
 	outFile << "Conditional statement tokens:\n";
 	printList(conditionalStatements, outFile);
 
+	cout << "Below is verbose output:\n";
+	outFile << "Below is verbose output:\n";
 	//Run statistics, and print to both terminal and output file.
 	statistics(tokens, true, cout);
 	statistics(tokens, true, outFile);
+
+	cout << "------------------------\n";
+	outFile << "------------------------\n";
+	cout << "Below is non-verbose output:\n";
+	outFile << "Below is non-verbose output:\n";
+	//Run statistics, and print to both terminal and output file.
+	statistics(tokens, false, cout);
+	statistics(tokens, false, outFile);
+
 
 	return 0;
 }
@@ -185,7 +205,7 @@ void printList(TokenList *theList, ostream &outputStream)
 
 	Token *t = theList->getFirst();
 	outputStream << endl;
-	outputStream << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(10) << "Width (if any)" << "|" << setw(6) << "CS Error?" << endl;
+	outputStream << setw(20) << "Token" << "|" << setw(15) << "Type" << "|" << setw(5) << "KW?" << "|" << setw(20) << "Token Type (if any)" << "|" << setw(14) << "Width (if any)" << "|" << setw(6) << "CS Error?" << endl;
 	//Traverse and print out list to the output stream.
 	while (t) {
 		details = "N/A";	//Initialize to N/A.
@@ -197,7 +217,9 @@ void printList(TokenList *theList, ostream &outputStream)
 		tokenTypeInt = t->getTokenType();
 
 		//Change tokenType to the correct token type. Could've used the get functions (bool) for each, but this works as well.
-		if (tokenTypeInt == 0)
+		if (t->getStringRep() == "\n")
+			tokenType = "n/a";
+		else if (tokenTypeInt == 0)
 			tokenType = "T_Operator";
 		else if (tokenTypeInt == 1)
 			tokenType = "T_Identifier";
@@ -213,16 +235,13 @@ void printList(TokenList *theList, ostream &outputStream)
 			width = t->getTokenDetails()->width;
 		}
 
-		if (t->getStringRep() == "\n") //Skip new lines.
-		{
-			t = t->getNext();
-			continue;
-		}
+		if (t->getStringRep() == "\n") //Indicate new line token.
+			stringRep = "(new line)";
 		else
 			stringRep = t->getStringRep();	//Store the string into the temp string.
 
 		//Output the result on the output stream
-		outputStream << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(10) << width << "|" << setw(10) << error << endl;
+		outputStream << setw(20) << stringRep << "|" << setw(15) << tokenType << "|" << setw(5) << t->isKeyword() << "|" << setw(20) << details << "|" << setw(14) << width << "|" << setw(10) << error << endl;
 		t = t->getNext();
 	}
 	outputStream << endl << endl;
@@ -263,7 +282,7 @@ void statistics(TokenList &theList, bool verbose, ostream& outputStream)
 	checkErrorConditionalStatements(&theList, verbose, outputStream, missingThen, missingEndIf);
 
 	//Find conditional statements
-	conditionalStatements = findAllConditionalExpressions(theList,true);
+	conditionalStatements = findAllConditionalExpressions(theList,verbose);
 
 	checkConditionalMismatch(&theList,conditionalStatements, verbose, outputStream, mismatchErrors);
 	

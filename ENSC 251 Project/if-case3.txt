@@ -1,0 +1,6 @@
+-- Missing then
+if (three = '1') then 
+   b <= a;
+elsif (b = '1') 
+  c <= a;
+end if;

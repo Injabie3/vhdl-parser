@@ -1,0 +1,4 @@
+-- Missing then
+if (one = '1')
+   b <= a;
+end if;

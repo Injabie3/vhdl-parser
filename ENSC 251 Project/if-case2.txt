@@ -1,0 +1,6 @@
+-- Missing then
+if (two = '1') 
+   b <= a;
+else
+   c <= a;
+end if;

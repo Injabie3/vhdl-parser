@@ -58,33 +58,79 @@ findAndSetTokenDetails
 			
 findAllConditionalExpressions
 	- While the pointer to the current token is not NULL:
-		- If "if", "elsif", "else", or "when" is found, toggle conditional flag.
+		- If "if", "elsif", "else", or "when" is found, and error flag is not set, toggle conditional flag.
 		- Else if "end" is found, check next token to see if it's an "if" and handle accordingly.
 		- Else if conditional flag is true, make a copy of the token, and append to new TokenList.
 		- Go to next token
 	- Return pointer to new TokenList.
 
 
-checkErrorConditionalExpressions
+checkErrorConditionalExpressions (NEW)
+	- Point pointer to front of entire token list
+	- While the pointer to the current token is not NULL:
+		- If "if" is found, and CS has not begun, set CS flag to true, and increment ifStatements
+		- Else if "if" is found, and CS has begun, increment missingThen and ifStatements
+			- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
+			- If verbose is true, output the line with the error type (missing then).
+		- Else if "then" is found and CS is true, set CS flag to false.
+		- Else if "elsif" is found, and CS flag is true, increment missingThen.
+			- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
+			- If verbose is true, output the line with the error type (missing then).
+		- Else if "elsif" is found, and CS flag is false, set CS flag to true.
+		- Else if "end" is found, check next token.
+			- If next token is "if" and CS flag is set:
+				- Set CS flag to false.
+				- Increment missingThen.
+				- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
+				- If verbose is true, output the line with the error type (missing then).
+				- increment endIfStatements.
+			- Else if next token is "if" and CS flag is not set:
+				- increment endIfStatements.
+		- Else if "else" is found and CS flag is true:
+			- Set CS flag to false
+			- Increment missingThen
+			- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
+			- If verbose is true, output the line with the error type (missing then)
+		- If the next token is NULL, break out of loop.
+		- Else go to next token.
+	- If CS flag is still set at the end
+		- Increment missingThen
+		- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
+		- If verbose is true, output the line with the error type (missing then)
+	- Calculate missing end ifs (missingEndIf -= endIfStatements)
+	- Point a pointer to the back of entire token list.
+	- While that back pointer is not NULL
+		- If 
+		- Check for "if" in stringRep.
+			- If true, check to make sure previous token is not "end"
+				- If true, traverse back until "\n" is hit.
+				- Take the token before the "\n", and output error.
+		
+		
+checkErrorConditionalExpressions (OLD - NOT USED IN THE CODE)
 	- Point pointer to front of entire token list
 	- While the pointer to the current token is not NULL:
 		- If "if" is found, and CS has not begun, set CS flag to true,
 		- Else if "if" is found, and CS has begun, and there is no previous "then", increment missingEndIf and missingThen.
+			- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
 			- If verbose is true, output the line with the error type (missing end if and then).
 		- Else if "if" is found, and CS has begun, and there is previous "then", increment missingEndIf, and set foundThen to false.
 			- If verbose is true, output the line with the error type (missing then).
 		- Else if "then" is found and CS is true, set foundThen flag to true.
 		- Else if "elsif" is found, and foundThen flag is true, set foundThen flag to false.
 		- Else if "elsif" is found, and foundThen flag is false, increment missingThen.
+			- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
 			- If verbose is true, output the line with the error type (missing then).
 		- If "end" is found, check next token.
 			- If next token is "if":
 				- Set CS to false.
 				- If foundThen is false, increment missingThen, and if verbose, output error.
+					- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
 		- If the next token is NULL, break out of loop.
-		- Go to next token.
+		- Else go to next token.
 	- If CS flag is still set at the end, and foundThen is false
 		- Increment missingThen and missingEndIf
+		- Set the preceeding "if" or "elsif" as an error (conditionalError) in the Token object.
 		- If verbose is true, output the line with the error type (missing then and end if)
 	- If CS flag is still set
 		- Increment missingEndIf

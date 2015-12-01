@@ -1,14 +1,16 @@
 // ENSC 251 Project
 // Title:			parserClasses.cpp
-// Related Files:	parserClasses.h, Project.cpp
+// Related Files:	parserClasses.h, project.cpp
 // Author(s):		Lesley Shannon, Ryan Lui, Lior Bragilevsky
 // Student Number:	301251951, 301248920
-// Last Modified:	2015-11-03
-// Special Thanks:	Ashton Tito (301266791) for help with understanding
-// Version:			2.0
+// Last Modified:	2015-11-30
+// Version:			3.0
 // Revision Hist.:	1.0 - File creation.
-//					2.0 - Final product.
-//					3.0 - Modifications for Project.
+//					2.0 - Final product for assignment 3
+//					3.0 - Final product for project.
+
+
+//Disable warnings for strcpy on Visual Studio.
 #define _CRT_SECURE_NO_WARNINGS
 
 //Allowed to include anything part of the std library (@467 on Piazza: http://puu.sh/lwsCj/118cfb8a1c.png):
@@ -724,33 +726,42 @@ string stringLower(Token *token)
 	return stringRepLower;
 }
 
-//Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
+//This function checks for errors in conditional statements. (e.g. missing end if, missing then)
+//This function accepts the following arguments:
+// - TokenList *currentList - A pointer to the current token list, used to check for errors.
+// - bool verbose			- Used to indicate whether to output in verbose mode or not.
+// - ostream outputStream	- The stream to use when outputting information.
+// - int &missingThen		- Number of missing thens, passed in by reference, which is updated in the function.
+// - int &missingEndIf		- Number of missing "end if"s, passed in by reference. Updated in function.
+//NOTE: missingThen and missingEndIf are initialized to zero in the function!
 //Does not modify the original list, and can output in verbose mode.
+//THIS IS THE NEW FUNCTION.
 void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostream &outputStream, int &missingThen, int &missingEndIf)
 {
-	Token *current = currentList->getFirst();	//The current token, used to traverse the list in order to find errors.
-	Token *move = NULL;	//Temporary token pointer, used to traverse the list when an error is found
-	string stringLowered = ""; //Current token's stringRep in lowercase
-	string backTrack = ""; //The stringRep for move, used when traversing backwards to find previous if or elsif
-	bool CSflag = false;	//A flag that is set to true when we are in a conditional statement.
-	bool foundThen = false;	//A flag that is set to true when the corresponding if or elsif has a then.
+	Token *current = currentList->getFirst();
+	Token *move = NULL; //A pointer used to traverse backwards in the list when there is a missing "then".
+	bool CSflag = false; //Indicates whether or not we have started a conditional statement. Known as CS from now on.
+	string stringRepLower = ""; //The current token's stringRep in all lowercase.
+	string backTrack = ""; //Used in conjunction with *move to find the lowercase version of stringRep when traversing backwards during an event of a missing "then".
+	int ifStatements = 0; //Number of if's (excluding "end if") detected.
+	int endIfStatements = 0; //Number of "end if" statements detected.
 
-	missingThen = 0;
-	missingEndIf = 0;
 
 	while (current)
 	{
-		stringLowered = stringLower(current); //Make the entire string all lowercase
+		stringRepLower = stringLower(current); //Make current token's stringRep all lowercase.
 
-		if (stringLowered == "if" && !CSflag) //Starting conditional statements
-			CSflag = true;
-		else if (stringLowered == "if" && CSflag && !foundThen) //Missing then and endif
+		if (stringRepLower == "if" && !CSflag) //If "if" is found, and CS has not begun, set CS flag to true, and increment missingEndIf
 		{
-			missingEndIf++;
+			CSflag = true;
+			ifStatements++;
+		}
+		else if (stringRepLower == "if" && CSflag) //Missing then
+		{
 			missingThen++;
-
+			
 			if (verbose)	//Print error if verbose output is requested.
-				printErrorLine(current, "Missing then and endif", outputStream);
+				printErrorLine(current, "Missing then", outputStream);
 
 			move = current->getPrev();
 			while (move) //Set error to previous if or elsif
@@ -774,21 +785,92 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostre
 					}
 				}
 				move = move->getPrev();
+			} //End error setting while loop.
+		}
+		else if (stringRepLower == "then" && CSflag) //Everything's OK, end of conditional statement
+		{
+			CSflag = false;
+		}
+		else if (stringRepLower == "elsif" && CSflag) //Missing then.
+		{
+			missingThen++;
+
+			if (verbose)	//Print error if verbose output is requested.
+				printErrorLine(current, "Missing then", outputStream);
+
+			move = current->getPrev();
+			while (move) //Set error to previous if or elsif
+			{
+				backTrack = stringLower(move);
+				if (backTrack == "elsif")
+				{
+					move->setConditionalError();
+					break;
+				}
+				if (backTrack == "if")
+				{
+					backTrack = stringLower(move->getPrev());
+					if (backTrack == "end")//Do nothing.
+					{
+					}
+					else
+					{
+						move->setConditionalError();
+						break;
+					}
+				}
+				move = move->getPrev();
+			} //End error setting while loop.
+		}
+		else if (stringRepLower == "elsif" && !CSflag)
+		{
+			CSflag = true;
+		}
+		else if (stringRepLower == "end")
+		{
+			current = current->getNext();
+			stringRepLower = stringLower(current); //Lower the string in the new token
+			if (stringRepLower == "if" && CSflag) //Missing then
+			{
+				CSflag = false;
+				missingThen++;
+
+				if (verbose)	//Print error if verbose output is requested.
+					printErrorLine(current, "Missing then", outputStream);
+
+				move = current->getPrev();
+				while (move) //Set error to previous if or elsif
+				{
+					backTrack = stringLower(move);
+					if (backTrack == "elsif")
+					{
+						move->setConditionalError();
+						break;
+					}
+					if (backTrack == "if")
+					{
+						backTrack = stringLower(move->getPrev());
+						if (backTrack == "end")//Do nothing.
+						{
+						}
+						else
+						{
+							move->setConditionalError();
+							break;
+						}
+					}
+					move = move->getPrev();
+				} //End error setting while loop.
+				endIfStatements++;
+			}
+			else if (stringRepLower == "if" && !CSflag) //Everything's OK!
+			{
+				endIfStatements++;
 			}
 		}
-		else if (stringLowered == "if" && CSflag && foundThen)	//Missing endif, and starting new conditional statement
+		else if (stringRepLower == "else" && CSflag) //Missing then
 		{
-			missingEndIf++;
-			foundThen = false;
-			if (verbose)	//Print error if verbose output is requested.
-				printErrorLine(current, "Missing endif", outputStream);
-		}
-		else if (stringLowered == "then" && CSflag)	//Found then in a conditional statement
-			foundThen = true;
-		else if (stringLowered == "elsif" && foundThen && CSflag)	//reached another conditional statement, and then was already found, so set it back to false.
-			foundThen = false;
-		else if (stringLowered == "elsif" && !foundThen && CSflag) //Reached another conditional statement without seeing a then.
-		{
+			CSflag = false;
 			missingThen++;
 			if (verbose)	//Print error if verbose output is requested.
 				printErrorLine(current, "Missing then", outputStream);
@@ -815,64 +897,20 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostre
 					}
 				}
 				move = move->getPrev();
-			}
+			} //End error setting while loop.
 		}
-		else if (stringLowered == "end" && CSflag) //Reached end token, check for if.
-		{
-			current = current->getNext();
-			stringLowered = stringLower(current); //Lower the string in the new token
-			if (stringLowered == "if")
-			{
-				CSflag = false;
-				if (!foundThen) //Missing then from conditional statement
-				{
-					missingThen++;
 
-					if (verbose)	//Print error if verbose output is requested.
-						printErrorLine(current, "Missing then", outputStream);
-					
-					move = current->getPrev();
-					while (move) //Set error to previous if or elsif
-					{
-						backTrack = stringLower(move);
-						if (backTrack == "elsif")
-						{
-							move->setConditionalError();
-							break;
-						}
-						if (backTrack == "if")
-						{
-							backTrack = stringLower(move->getPrev());
-							if (backTrack == "end")//Do nothing.
-							{
-							}
-							else
-							{
-								move->setConditionalError();
-								break;
-							}
-						}
-						move = move->getPrev();
-					}
-				}
-				foundThen = false;
-			}
-
-		}
-		if (current->getNext() == NULL) //Fixes error when outside loop.
-			break;
-
-		current = current->getNext();
-	}
-
-	if (CSflag && !foundThen) //Missing then and endif
+		if (current->getNext() == NULL) break;
+		else current = current->getNext();
+	} //End while loop
+	
+	if (CSflag) //Still missing a "then"
 	{
-		missingEndIf++;
 		missingThen++;
 
 		if (verbose)	//Print error if verbose output is requested.
-			printErrorLine(current, "Missing then and endif", outputStream);
-		
+			printErrorLine(current, "Missing then", outputStream);
+
 		move = current->getPrev();
 		while (move) //Set error to previous if or elsif
 		{
@@ -895,13 +933,20 @@ void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostre
 				}
 			}
 			move = move->getPrev();
-		}
+		} //End error setting while loop.
 	}
-	else if (CSflag)
+
+	//Calculate missing "end if"s
+	missingEndIf = ifStatements - endIfStatements;
+
+	//Set all end if errors at the end, because it is hard to tell where these errors occur.
+	current = currentList->getLast()->getPrev();
+	if (current && verbose)
 	{
-		missingEndIf++;
-		if (verbose)	//Print error if verbose output is requested.
-			printErrorLine(current, "Missing endif", outputStream);
+		for (int errors = missingEndIf; errors != 0; errors--)
+		{
+			printErrorLine(current, "Missing end if", outputStream);
+		}
 	}
 }
 

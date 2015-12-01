@@ -1,12 +1,13 @@
-// ENSC 251 Project 3
+// ENSC 251 Project
 // Title:			parserClasses.h
 // Related Files:	parserClasses.cpp, project.cpp
 // Author(s):		Lesley Shannon, Ryan Lui, Lior Bragilevsky
 // Student Number:	301251951, 301248920
-// Last Modified:	2015-11-04
-// Version:			2.0
+// Last Modified:	2015-11-30
+// Version:			3.0
 // Revision Hist.:	1.0 - File creation.
-//					2.0 - Final product.
+//					2.0 - Final product for assignment3.
+//					3.0 - Final product for project.
 
 #ifndef PARSERCLASSES_H_
 #define PARSERCLASSES_H_
@@ -242,11 +243,19 @@ TokenList* findAllConditionalExpressions(const TokenList &tokenList, bool extraB
 //Custom helper function: Makes all alpha characters in stringRep of token lowercase, and returns the lowered string. If token is NULL, returns empty string.
 string stringLower(Token *token);
 
-//Pass in two variables by reference, and set them to zero first, then increment depending on what is found.
+//This function checks for errors in conditional statements. (e.g. missing end if, missing then)
+//This function accepts the following arguments:
+// - TokenList *currentList - A pointer to the current token list, used to check for errors.
+// - bool verbose			- Used to indicate whether to output in verbose mode or not.
+// - ostream outputStream	- The stream to use when outputting information.
+// - int &missingThen		- Number of missing thens, passed in by reference, which is updated in the function.
+// - int &missingEndIf		- Number of missing "end if"s, passed in by reference. Updated in function.
+//NOTE: missingThen and missingEndIf are initialized to zero in the function!
 //Does not modify the original list, and can output in verbose mode.
 void checkErrorConditionalStatements(TokenList *currentList, bool verbose, ostream &outputStream, int &missingThen, int &missingEndIf);
 
-void printErrorLine(Token *token, string errorType, ostream& outputStream);
 //Function takes the token causing the error, and prints the entire line where the error occurs, along with the type of error.
 //Must guarantee that the list has starting \n and ending \n to avoid out of bound references!
+void printErrorLine(Token *token, string errorType, ostream& outputStream);
+
 #endif /* PARSERCLASSES_H_ */

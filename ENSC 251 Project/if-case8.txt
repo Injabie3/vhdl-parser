@@ -1,0 +1,6 @@
+-- Missing end if
+if (eight = '1') then 
+   b <= a;
+if (eight = '0') then
+  c <= a;
+end if;

@@ -1,0 +1,6 @@
+if (four = '1') then 
+   b <= a;
+elsif (b = '1') then
+  c <= a;
+else 
+  d <= a;
